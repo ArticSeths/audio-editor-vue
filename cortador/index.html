@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!-- saved from url=(0033)https://www.bearaudiotool.com/sp/ -->
+<html lang="sp">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Edita, corta, une, superpon, desvanece y silencia tus tonos de llamada, música o archivos MP3 y WAV</title>
+    <link href="./index_files/index_editor.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./index_files/index_editor.js"></script>
+  </head>
+  <body>
+    <div id="main_cent" class="jumbotron intro">
+      <div class="container" style="height: 100%;">
+        <div class="yamm-content">
+          <div class="converter-body">
+            <div class="row">
+              <div class="span4 offset4" style="display: none;">
+                <div class="progress progress-striped active">
+                  <div id="app-progress" class="bar" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="app-area">
+              <div class="row">
+                <div class="span12">
+                  <div class="btn-toolbar">
+                    <div class="btn-group">
+                      <a class="btn btn-default btn-sm" onclick="$('#files').click();">
+                        <i class="fa fa-folder-open"></i> Abrir
+                      </a>
+                      <input type="file" id="files" name="file" style="display: none;">
+                      <a class="btn btn-default btn-sm disabled" id="btn_undo" onclick="$('#audioLayerControl')[0].undo();">
+                        <i class="fa fa-rotate-left"></i> Deshacer
+                      </a>
+                      <a class="btn btn-default btn-sm disabled" id="btn_redo" onclick="$('#audioLayerControl')[0].redo();">
+                        <i class="fa fa-rotate-right"></i> Rehacer
+                      </a>
+                      <a class="btn btn-default btn-sm" onclick="$('#audioLayerControl')[0].crop();$('#audioLayerControl')[0].zoomToFit();">
+                        <i class="fa fa-crop"></i> Aislar selección
+                      </a>
+                      <a class="btn btn-default btn-sm" onclick="$('#audioLayerControl')[0].del();">
+                        <i class="fa fa-remove"></i> Eliminar
+                      </a>
+                      <a class="btn btn-default btn-sm" onclick="$('#audioLayerControl')[0].reset();">
+                        <i class="fa fa-history"></i> Restaurar
+                      </a>
+                    </div>
+                    <div class="btn-group">
+                      <a class="btn btn-default btn-sm" onclick="$('#audioLayerControl')[0].selectAll();">
+                        <i class="fa fa-arrows-alt"></i> Seleccionar todo
+                      </a>
+                      <a class="btn btn-default btn-sm" onclick="$('#audioLayerControl')[0].zoomIntoSelection();">
+                        <i class="fa fa-search-plus"></i> Ampliar la selección
+                      </a>
+                      <a class="btn btn-default btn-sm" onclick="$('#audioLayerControl')[0].zoomToFit();">
+                        <i class="fa fa-arrows-h"></i> Mostrar todo
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="span12">
+                  <div id="audioloader" style="width: 100%; text-align: center;"></div>
+                  <div class="well">
+                    <audiolayercontrol id="audioLayerControl" title="">
+                      <audiolayersequenceeditor>
+                        <canvas width="1008" height="20" style="display: none;"></canvas>
+                        <canvas class="audioLayerEditor" width="1008" height="100"></canvas>
+                        <canvas width="1008" height="20"></canvas>
+                      </audiolayersequenceeditor>
+                    </audiolayercontrol>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="span12">
+                  <div class="btn-toolbar">
+                    <div class="btn-group">
+                      <a class="btn btn-sm btn-default" onclick="$('#savewait').html(''); $('#save_audio').modal('show');">
+                        <i class="fa fa-save"></i> Guardar
+                      </a>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript">
+          var str_drag = "Arrastra y suelta los archivos aquí";
+          var str_leftc = "";
+          var str_rightc = "";
+          var str_position = "Iniciar:";
+          var str_selection = "Selección:";
+          
+          function set_start_sel(){
+          	$('#audioLayerControl')[0].set_start_sel();
+          }
+          
+          function set_end_sel(){
+          	$('#audioLayerControl')[0].set_end_sel();
+          }
+          
+          $("#audioloader").html("<i class='fa fa-refresh fa-spin'></i>");
+          $(window).load(function(){
+			      onDocumentLoaded();
+
+            function handleFileSelect2(evt) {
+              evt.stopPropagation();
+              evt.preventDefault();				
+              var files = evt.target.files;	
+              $('#audioLayerControl')[0].loadfile(files ,($(evt.currentTarget).attr('id') == "filesadd") );
+              this.value = null;
+            }
+            document.getElementById('files').addEventListener('change', handleFileSelect2, false);
+            $('#audioLayerControl')[0].setStartAndEndFun(function st(){
+              $("#audioloader").html("<i class='fa fa-refresh fa-spin'></i>");
+            },function ed(ret){
+              if ( ret == "ok" ) {
+                $("#audioloader").html("");
+              }
+              if ( ret == "error" ) {
+                $("#audioloader").html("");
+                $("#loadfileerror").modal("show");
+              }
+            },function error(info){
+              $("#errordlginfo").html(info);
+              $("#commerrorinfo").modal("show");
+            },function lockscreen(lock){
+              if ( lock ) {
+                $("#pluswrap").show();
+              } else {
+                $("#pluswrap").hide();
+              }
+            });
+            $('#audioLayerControl')[0].setUpdateUndoUIFun(function setUpdateUnDoUI(hisLen,curPos){
+          		if( hisLen <= 0 || curPos > hisLen - 1 ) {
+          			$("#btn_undo").addClass("disabled");
+          			$("#btn_redo").addClass("disabled");
+          			return;
+          		}  
+          		if ( curPos <= -1 ) {
+          			$("#btn_undo").addClass("disabled");	
+          		} else {	
+          			$("#btn_undo").removeClass("disabled");	
+          		}
+          		if ( curPos == hisLen - 1 ) {
+          			$("#btn_redo").addClass("disabled");	
+          		} else {	
+          			$("#btn_redo").removeClass("disabled");	
+          		}
+           	});
+          	$("#audioloader").html("");
+          });
+        </script>
+      </div>
+    </div>
+  </body>
+</html>
