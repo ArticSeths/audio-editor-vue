@@ -1,4 +1,3 @@
-'use strict'
 /* eslint-disable */
 var str_drag = "Arrastra y suelta los archivos aquí";
 var str_leftc = "";
@@ -27,57 +26,149 @@ document.getElementById('audioLayerControl').setStartAndEndFun(function st () {
 document.getElementById('audioLayerControl').setUpdateUndoUIFun(function setUpdateUnDoUI (hisLen, curPos) {
   if (hisLen <= 0 || curPos > hisLen - 1) {
     document.getElementById('btn_undo').classList.add('disabled')
+    document.getElementById('btn_undo').setAttribute("disabled", "disabled")
     document.getElementById('btn_redo').classList.add('disabled')
+    document.getElementById('btn_redo').setAttribute("disabled", "disabled")
     return
   }
   if (curPos <= -1) {
     document.getElementById('btn_undo').classList.add('disabled')
+    document.getElementById('btn_undo').setAttribute("disabled", "disabled")
   } else {
     document.getElementById('btn_undo').classList.remove('disabled')
+    document.getElementById('btn_undo').removeAttribute("disabled")
   }
   if (curPos === hisLen - 1) {
     document.getElementById('btn_redo').classList.add('disabled')
+    document.getElementById('btn_redo').setAttribute("disabled", "disabled")
   } else {
     document.getElementById('btn_redo').classList.remove('disabled')
+    document.getElementById('btn_redo').removeAttribute("disabled")
   }
 })
 /* -------------output.min.js----------------- */
 function AudioPlayback () {
   this.onAudioUpdate = function (e) {
-    const t = this.eventHost
-    const i = t.audioBufferSize
-    const o = i / t.sampleRate
+    var t = this.eventHost
+      , i = t.audioBufferSize
+      , o = i / t.sampleRate;
     if (!1 !== t.isPlaying) {
-      const n = t.audioDataRef
-      const s = e.outputBuffer.getChannelData(0)
-      const a = e.outputBuffer.getChannelData(1)
-      n.length == 1 ? (t.copyChannelDataToBuffer(s, n[0], t.currentPlayPosition, i, t.playStart, t.playEnd, t.isLooped), t.currentPlayPosition = t.copyChannelDataToBuffer(a, n[0], t.currentPlayPosition, i, t.playStart, t.playEnd, t.isLooped)) : n.length == 2 && (t.copyChannelDataToBuffer(s, n[0], t.currentPlayPosition, i, t.playStart, t.playEnd, t.isLooped), t.currentPlayPosition = t.copyChannelDataToBuffer(a, n[1], t.currentPlayPosition, i, t.playStart, t.playEnd, t.isLooped)), void 0 === t.currentPlayPosition ? t.stop() : (t.lastPlaybackUpdate -= o, t.lastPlaybackUpdate < 0 && (t.lastPlaybackUpdate = t.playbackUpdateInterval, t.notifyUpdateListener()))
+        var n = t.audioDataRef
+          , s = e.outputBuffer.getChannelData(0)
+          , a = e.outputBuffer.getChannelData(1);
+        1 == n.length ? (t.copyChannelDataToBuffer(s, n[0], t.currentPlayPosition, i, t.playStart, t.playEnd, t.isLooped),
+        t.currentPlayPosition = t.copyChannelDataToBuffer(a, n[0], t.currentPlayPosition, i, t.playStart, t.playEnd, t.isLooped)) : 2 == n.length && (t.copyChannelDataToBuffer(s, n[0], t.currentPlayPosition, i, t.playStart, t.playEnd, t.isLooped),
+        t.currentPlayPosition = t.copyChannelDataToBuffer(a, n[1], t.currentPlayPosition, i, t.playStart, t.playEnd, t.isLooped)),
+        void 0 === t.currentPlayPosition ? t.stop() : (t.lastPlaybackUpdate -= o,
+        t.lastPlaybackUpdate < 0 && (t.lastPlaybackUpdate = t.playbackUpdateInterval,
+        t.notifyUpdateListener()))
     }
   }
+
   this.copyChannelDataToBuffer = function (e, t, i, o, n, s, a) {
-    const r = i
-    const h = i + o > t.length ? t.length : i + o > s ? s : i + o
-    const l = h - r
-    const c = l < e.length ? a ? n : 0 : void 0
-    const u = void 0 !== c ? e.length - l + c : void 0
-    e.length
-    return void 0 === c ? (this.copyIntoBuffer(e, 0, t, r, h), h) : (this.copyIntoBuffer(e, 0, t, r, h), a ? (this.copyIntoBuffer(e, l, t, c, u), u) : void 0)
-  }, this.copyIntoBuffer = function (e, t, i, o, n) {
+    var r = i
+      , h = i + o > t.length ? t.length : i + o > s ? s : i + o
+      , l = h - r
+      , c = l < e.length ? a ? n : 0 : void 0
+      , u = void 0 !== c ? e.length - l + c : void 0;
+    e.length;
+    return void 0 === c ? (this.copyIntoBuffer(e, 0, t, r, h),
+    h) : (this.copyIntoBuffer(e, 0, t, r, h),
+    a ? (this.copyIntoBuffer(e, l, t, c, u),
+    u) : void 0)
+  }
+
+  this.copyIntoBuffer = function (e, t, i, o, n) {
     e.set(i.slice(o, n), t)
-  }, this.init = function () {
-    return this.audioBufferSize = 1024, this.sampleRate = 0, window.AudioContext = window.AudioContext || window.webkitAudioContext, this.audioContext = new AudioContext(), this.analyserNode = this.audioContext.createAnalyser(), this.analyserNode.minDecibels = -100, this.analyserNode.maxDecibels = 0, this.analyserNode.smoothingTimeConstant = 0, this.analyserNode.connect(this.audioContext.destination), this.audioDataRef = void 0, this.playStart = 0, this.playEnd = 0, this.isLooped = !1, this.currentPlayPosition = 0, this.isPlaying = !1, this.updateListener = [], this.playbackUpdateInterval = 0, this.lastPlaybackUpdate = 0, this.updateListener.push(this.updateCallback), this.audioContext
-  }, this.play = function (e, t, i, o, n) {
-    this.isPlaying || void 0 === e || e.length < 1 || e[0].length < 1 || void 0 === t || t <= 0 || (this.audioContext = this.audioContext || this.init(), this.javaScriptNode || (this.javaScriptNode = this.audioContext.createScriptProcessor(this.audioBufferSize, 1, 2), this.javaScriptNode.onaudioprocess = this.onAudioUpdate, this.javaScriptNode.eventHost = this), this.audioDataRef = e, this.sampleRate = t, this.isLooped = void 0 !== i && i, this.playStart = void 0 === o || o < 0 || o >= e[0].length ? 0 : o, this.playEnd = void 0 === n || n - this.audioBufferSize < o || n >= e[0].length ? e[0].length : n, this.currentPlayPosition = this.playStart, this.isPlaying = !0, this.javaScriptNode.connect(this.analyserNode), this.notifyUpdateListener())
-  }, this.stop = function () {
-    !1 !== this.isPlaying && (this.isPlaying = !1, this.javaScriptNode.disconnect(this.analyserNode), this.playStart = 0, this.playEnd = 0, this.isLooped = !1, this.currentPlayPosition = 0, this.lastPlaybackUpdate = 0, this.audioDataRef = void 0, this.sampleRate = 0, this.javaScriptNode = void 0, this.notifyUpdateListener())
-  }, this.pause = function () {
-    !1 !== this.isPlaying && (this.isPlaying = !1, this.lastPlaybackUpdate = 0, this.javaScriptNode.disconnect(this.analyserNode), this.notifyUpdateListener())
-  }, this.resume = function () {
-    this.isPlaying || void 0 === this.audioDataRef || this.audioDataRef.length < 1 || (this.isPlaying = !0, this.javaScriptNode.connect(this.analyserNode), this.notifyUpdateListener())
-  }, this.addUpdateListener = function (e) {
+  }
+  
+  this.init = function () {
+    return this.audioBufferSize = 1024,
+    this.sampleRate = 0,
+    window.AudioContext = window.AudioContext || window.webkitAudioContext,
+    this.audioContext = new AudioContext,
+    this.analyserNode = this.audioContext.createAnalyser(),
+    this.analyserNode.minDecibels = -100,
+    this.analyserNode.maxDecibels = 0,
+    this.analyserNode.smoothingTimeConstant = 0,
+    this.analyserNode.connect(this.audioContext.destination),
+    this.audioDataRef = void 0,
+    this.playStart = 0,
+    this.playEnd = 0,
+    this.isLooped = !1,
+    this.currentPlayPosition = 0,
+    this.isPlaying = !1,
+    this.updateListener = [],
+    this.playbackUpdateInterval = 0,
+    this.lastPlaybackUpdate = 0,
+    this.updateListener.push(this.updateCallback),
+    this.audioContext
+  }
+
+  this.selectdbl = function () {
+    this.eventHost.selectionStart != this.eventHost.selectionEnd ? (this.eventHost.selectionStart = 0,
+    this.eventHost.selectionEnd = 0) : (this.eventHost.selectionStart = 0,
+    this.eventHost.selectionEnd = this.eventHost.getPixelToAbsolute(this.eventHost.canvasReference.width)),
+    this.eventHost.mouseDown = !1,
+    this.eventHost.mouseSelectionOfStart = !1,
+    this.eventHost.mouseSelectionOfEnd = !1,
+    this.eventHost.mouseInsideOfSelection = !1,
+    focusOnAudioLayerSequenceEditor = void 0,
+    this.eventHost.repaint(!0),
+    this.eventHost.updateSelectionForLinkedEditors(!0)
+  }
+  
+  this.play = function (e, t, i, o, n) {
+    this.isPlaying || void 0 === e || e.length < 1 || e[0].length < 1 || void 0 === t || t <= 0 || (this.audioContext = this.audioContext || this.init(),
+    this.javaScriptNode || (this.javaScriptNode = this.audioContext.createScriptProcessor(this.audioBufferSize, 1, 2),
+    this.javaScriptNode.onaudioprocess = this.onAudioUpdate,
+    this.javaScriptNode.eventHost = this),
+    this.audioDataRef = e,
+    this.sampleRate = t,
+    this.isLooped = void 0 !== i && i,
+    this.playStart = void 0 === o || o < 0 || o >= e[0].length ? 0 : o,
+    this.playEnd = void 0 === n || n - this.audioBufferSize < o || n >= e[0].length ? e[0].length : n,
+    this.currentPlayPosition = this.playStart,
+    this.isPlaying = !0,
+    this.javaScriptNode.connect(this.analyserNode),
+    this.notifyUpdateListener())
+  }
+  
+  this.stop = function () {
+    !1 !== this.isPlaying && (this.isPlaying = !1,
+    this.javaScriptNode.disconnect(this.analyserNode),
+    this.playStart = 0,
+    this.playEnd = 0,
+    this.isLooped = !1,
+    this.currentPlayPosition = 0,
+    this.lastPlaybackUpdate = 0,
+    this.audioDataRef = void 0,
+    this.sampleRate = 0,
+    this.javaScriptNode = void 0,
+    this.notifyUpdateListener())
+  }
+  
+  this.pause = function () {
+    !1 !== this.isPlaying && (this.isPlaying = !1,
+    this.lastPlaybackUpdate = 0,
+    this.javaScriptNode.disconnect(this.analyserNode),
+    this.notifyUpdateListener())
+  }
+  
+  this.resume = function () {
+    this.isPlaying || void 0 === this.audioDataRef || this.audioDataRef.length < 1 || (this.isPlaying = !0,
+    this.javaScriptNode.connect(this.analyserNode),
+    this.notifyUpdateListener())
+  }
+  
+  this.addUpdateListener = function (e) {
     this.updateCallback = e
-  }, this.notifyUpdateListener = function () {
-    for (let e = 0; e < this.updateListener.length; ++e) { this.updateListener[e].audioPlaybackUpdate() }
+  }
+  
+  this.notifyUpdateListener = function () {
+    for (let e = 0; e < this.updateListener.length; ++e) {
+      this.updateListener[e].audioPlaybackUpdate()
+    }
   }
 }
 
@@ -86,28 +177,35 @@ function IsPowerOfTwo (e) {
 }
 
 function NumberOfBitsNeeded (e) {
-  for (let t = 0; t++;) {
-    if (e & 1 << t) { return t }
-  }
+  var t;
+  e < 2 && (console.error("Error: FFT called with size %d\n", e),
+  exit(1));
+  for (var t = 0; ; t++)
+    if (e & 1 << t)
+      return t
 }
 
 function ReverseBits (e, t) {
-  for (var i, o, i = o = 0; i < t; i++) { o = o << 1 | 1 & e, e >>= 1 }
+  for (var i, o, i = o = 0; i < t; i++)
+    o = o << 1 | 1 & e,
+    e >>= 1;
   return o
 }
 
 function ACInitFFT () {
-  gFFTBitTable = []
-  for (let e = 2, t = 1; t <= MaxFastBits; t++) {
-    gFFTBitTable[t - 1] = new Int32Array(e)
-    for (let i = 0; i < e; i++) { gFFTBitTable[t - 1][i] = ReverseBits(i, t) }
+  gFFTBitTable = [];
+  for (var e = 2, t = 1; t <= MaxFastBits; t++) {
+    gFFTBitTable[t - 1] = new Int32Array(e);
+    for (var i = 0; i < e; i++)
+      gFFTBitTable[t - 1][i] = ReverseBits(i, t);
     e <<= 1
   }
 }
 
 function DeinitFFT () {
   if (gFFTBitTable) {
-    for (let e = 1; e <= MaxFastBits; e++) { gFFTBitTable[e - 1] = void 0 }
+    for (var e = 1; e <= MaxFastBits; e++)
+      gFFTBitTable[e - 1] = void 0;
     gFFTBitTable = void 0
   }
 }
@@ -117,32 +215,94 @@ function FastReverseBits (e, t) {
 }
 
 function ACFFT (e, t, i, o, n, s) {
-  let a; var r; var h; let l; var c; let u; let d; let f; let v; let p = 2 * Math.PI
-  if (!IsPowerOfTwo(e)) { return console.log(e + ' is not a power of two'), 1 }
-  gFFTBitTable || ACInitFFT(), t || (p = -p), a = NumberOfBitsNeeded(e)
-  for (var r = 0; r < e; r++) { h = FastReverseBits(r, a), n[h] = i[r], s[h] = void 0 === o ? 0 : o[r] }
-  for (d = 1, u = 2; u <= e; u <<= 1) {
+  var a, r, h, l, c, u, d, f, v, p = 2 * Math.PI;
+  if (!IsPowerOfTwo(e))
+    return console.log(e + " is not a power of two"),
+    1;
+  gFFTBitTable || ACInitFFT(),
+  t || (p = -p),
+  a = NumberOfBitsNeeded(e);
+  for (var r = 0; r < e; r++)
+    h = FastReverseBits(r, a),
+    n[h] = i[r],
+    s[h] = void 0 === o ? 0 : o[r];
+  for (d = 1,
+  u = 2; u <= e; u <<= 1) {
     for (var m, g, S, y, w, E, q = p / u, R = Math.sin(-2 * q), C = Math.sin(-q), L = Math.cos(-2 * q), A = Math.cos(-q), T = 2 * A, r = 0; r < e; r += u) {
-      S = L, g = A, E = R, w = C
-      for (var h = r, c = 0; c < d; h++, c++) { m = T * g - S, S = g, g = m, y = T * w - E, E = w, w = y, l = h + d, f = m * n[l] - y * s[l], v = m * s[l] + y * n[l], n[l] = n[h] - f, s[l] = s[h] - v, n[h] += f, s[h] += v }
+      S = L,
+      g = A,
+      E = R,
+      w = C;
+      for (var h = r, c = 0; c < d; h++,
+      c++)
+        m = T * g - S,
+        S = g,
+        g = m,
+        y = T * w - E,
+        E = w,
+        w = y,
+        l = h + d,
+        f = m * n[l] - y * s[l],
+        v = m * s[l] + y * n[l],
+        n[l] = n[h] - f,
+        s[l] = s[h] - v,
+        n[h] += f,
+        s[h] += v
     }
     d = u
   }
-  if (t) { for (var b = e, r = 0; r < e; r++) { n[r] /= b, s[r] /= b } }
+  if (t)
+    for (var b = e, r = 0; r < e; r++)
+      n[r] /= b,
+      s[r] /= b
 }
 
 function RealFFT (e, t, i, o) {
-  for (var n, s = e / 2, a = Math.PI / s, r = new Float32Array(s), h = new Float32Array(s), n = 0; n < s; n++) { r[n] = t[2 * n], h[n] = t[2 * n + 1] }
-  ACFFT(s, 0, r, h, i, o)
-  for (var l, c, u, d, f, v = Math.sin(0.5 * a), p = -2 * v * v, m = -1 * Math.sin(a), g = 1 + p, S = m, n = 1; n < s / 2; n++) { l = s - n, c = 0.5 * (i[n] + i[l]), u = 0.5 * (o[n] - o[l]), d = 0.5 * (o[n] + o[l]), f = -0.5 * (i[n] - i[l]), i[n] = c + g * d - S * f, o[n] = u + g * f + S * d, i[l] = c - g * d + S * f, o[l] = g * f - u + S * d, g = (v = g) * p - S * m + g, S = S * p + v * m + S }
-  i[0] = (c = i[0]) + o[0], o[0] = c - o[0]
+  for (var n, s = e / 2, a = Math.PI / s, r = new Float32Array(s), h = new Float32Array(s), n = 0; n < s; n++)
+    r[n] = t[2 * n],
+    h[n] = t[2 * n + 1];
+  ACFFT(s, 0, r, h, i, o);
+  for (var l, c, u, d, f, v = Math.sin(.5 * a), p = -2 * v * v, m = -1 * Math.sin(a), g = 1 + p, S = m, n = 1; n < s / 2; n++)
+    l = s - n,
+    c = .5 * (i[n] + i[l]),
+    u = .5 * (o[n] - o[l]),
+    d = .5 * (o[n] + o[l]),
+    f = -.5 * (i[n] - i[l]),
+    i[n] = c + g * d - S * f,
+    o[n] = u + g * f + S * d,
+    i[l] = c - g * d + S * f,
+    o[l] = g * f - u + S * d,
+    g = (v = g) * p - S * m + g,
+    S = S * p + v * m + S;
+  i[0] = (c = i[0]) + o[0],
+  o[0] = c - o[0]
 }
 
 function PowerSpectrum (e, t, i) {
-  for (var o, n = e / 2, s = Math.PI / n, a = new Float32Array(n), r = new Float32Array(n), h = new Float32Array(n), l = new Float32Array(n), o = 0; o < n; o++) { a[o] = t[2 * o], r[o] = t[2 * o + 1] }
-  ACFFT(n, 0, a, r, h, l)
-  for (var c, u, d, f, v, p, m, g = Math.sin(0.5 * s), S = -2 * g * g, y = -1 * Math.sin(s), w = 1 + S, E = y, o = 1; o < n / 2; o++) { c = n - o, u = 0.5 * (h[o] + h[c]), d = 0.5 * (l[o] - l[c]), f = 0.5 * (l[o] + l[c]), v = -0.5 * (h[o] - h[c]), p = u + w * f - E * v, m = d + w * v + E * f, i[o] = p * p + m * m, p = u - w * f + E * v, m = w * v - d + E * f, i[c] = p * p + m * m, w = (g = w) * S - E * y + w, E = E * S + g * y + E }
-  p = (u = h[0]) + l[0], m = u - l[0], i[0] = p * p + m * m, p = h[n / 2], m = l[n / 2], i[n / 2] = p * p + m * m
+  for (var o, n = e / 2, s = Math.PI / n, a = new Float32Array(n), r = new Float32Array(n), h = new Float32Array(n), l = new Float32Array(n), o = 0; o < n; o++)
+    a[o] = t[2 * o],
+    r[o] = t[2 * o + 1];
+  ACFFT(n, 0, a, r, h, l);
+  for (var c, u, d, f, v, p, m, g = Math.sin(.5 * s), S = -2 * g * g, y = -1 * Math.sin(s), w = 1 + S, E = y, o = 1; o < n / 2; o++)
+    c = n - o,
+    u = .5 * (h[o] + h[c]),
+    d = .5 * (l[o] - l[c]),
+    f = .5 * (l[o] + l[c]),
+    v = -.5 * (h[o] - h[c]),
+    p = u + w * f - E * v,
+    m = d + w * v + E * f,
+    i[o] = p * p + m * m,
+    p = u - w * f + E * v,
+    m = w * v - d + E * f,
+    i[c] = p * p + m * m,
+    w = (g = w) * S - E * y + w,
+    E = E * S + g * y + E;
+  p = (u = h[0]) + l[0],
+  m = u - l[0],
+  i[0] = p * p + m * m,
+  p = h[n / 2],
+  m = l[n / 2],
+  i[n / 2] = p * p + m * m
 }
 
 function NumWindowFuncs () {
@@ -337,7 +497,7 @@ function get_int16array_from_unit8array (e) {
 }
 
 function mp3_encode (e, t, i, o, n, s, a, r) {
-  const h = new Worker('/audioeditor/encode/mp3_worker_v2.js')
+  const h = new Worker('/mp3_worker_v2.js')
   h.left = t, h.right = i, h.blocksize = 57600, h.onmessage = function (e) {
     if (e.data.cmd == 'done') { r(e.data.mp3data) } else if (e.data.cmd == 'progress') { a(e.data.proc) } else if (e.data.cmd == 'rq_chunk') {
       const t = e.data.i + this.blocksize > this.left.length ? this.left.length : e.data.i + this.blocksize
@@ -354,6 +514,60 @@ function mp3_encode (e, t, i, o, n, s, a, r) {
     out_samplerate: o,
     out_channels: n,
     out_bitrate: s
+  })
+}
+
+function timeToSeconds(e) {
+  var t = e.split(":");
+  return 60 * parseFloat(t[0]) * 60 + 60 * parseFloat(t[1]) + parseFloat(t[2]) + parseFloat("0." + t[3])
+}
+
+function audio_convert(e, t, i, o, s) {
+  var a, r = /Duration: (.*?), /,
+      h = /time=(.*?) /,
+      l = new Worker("/audio_worker.js");
+  l.onmessage = function(e) {
+      var t = e.data;
+      if ("ready" === t.type && window.File && window.FileList && window.FileReader);
+      else if ("stdout" == t.type) console.log(t.data);
+      else if ("stderr" == t.type) {
+          if (console.log(t.data), r.exec(t.data) && (a = timeToSeconds(r.exec(t.data)[1])), h.exec(t.data)) {
+              var i = timeToSeconds(h.exec(t.data)[1]);
+              a
+          }
+      } else if ("done" == t.type) {
+          var o = t.data.code,
+              l = Object.keys(t.data.outputFiles);
+          if (0 == o && l.length) {
+              var c = l[0],
+                  u = t.data.outputFiles[c];
+              s(u, c)
+          } else s(null)
+      }
+  };
+  var arguments = [];
+  switch (arguments.push("-i"), arguments.push("input.wav"), arguments.push("-b:a"), arguments.push(t),arguments.push("-ar"), arguments.push("44100"), arguments.push("-ac") , arguments.push(i), o.toLowerCase()) {
+      case "mp3":
+          arguments.push("-acodec"), arguments.push("libmp3lame"), arguments.push("export_ofoct.com.mp3");
+          break;
+      case "ogg":
+          arguments.push("-acodec"), arguments.push("libvorbis"), arguments.push("export_ofoct.com.ogg");
+          break;
+      case "aac":
+          arguments.push("-acodec"), arguments.push("libfdk_aac"), arguments.push("export_ofoct.com.mp4");
+          break;
+      case "wma":
+          arguments.push("-acodec"), arguments.push("wmav1"), arguments.push("export_ofoct.com.asf")
+  }
+  console.log(arguments);
+  console.log(e);
+  l.postMessage({
+      type: "command",
+      arguments: arguments,
+      files: [{
+          name: "input.wav",
+          buffer: e
+      }]
   })
 }
 
@@ -475,6 +689,18 @@ function audioLayerControl (e) {
     return e.fromAudioSequences(t), e
   }, this.playToggle = function () {
     this.audioLayerControl.audioPlayback.isPlaying ? this.stop() : this.play()
+
+  }, this.selectdbl = function () {
+    this.audioLayerControl.listOfSequenceEditors[0].selectionStart != this.audioLayerControl.listOfSequenceEditors[0].selectionEnd ? (this.audioLayerControl.listOfSequenceEditors[0].selectionStart = 0,
+    this.audioLayerControl.listOfSequenceEditors[0].selectionEnd = 0) : (this.audioLayerControl.listOfSequenceEditors[0].selectionStart = 0,
+    this.audioLayerControl.listOfSequenceEditors[0].selectionEnd = this.audioLayerControl.listOfSequenceEditors[0].getPixelToAbsolute(this.audioLayerControl.listOfSequenceEditors[0].canvasReference.width)),
+    this.audioLayerControl.listOfSequenceEditors[0].mouseDown = !1,
+    this.audioLayerControl.listOfSequenceEditors[0].mouseSelectionOfStart = !1,
+    this.audioLayerControl.listOfSequenceEditors[0].mouseSelectionOfEnd = !1,
+    this.audioLayerControl.listOfSequenceEditors[0].mouseInsideOfSelection = !1,
+    focusOnAudioLayerSequenceEditor = void 0,
+    this.audioLayerControl.listOfSequenceEditors[0].repaint(!0),
+    this.audioLayerControl.listOfSequenceEditors[0].updateSelectionForLinkedEditors(!0)
   }, this.play = function () {
     for (var e = [], t = 0; t < this.audioLayerControl.listOfSequenceEditors.length; ++t) { e.push(this.audioLayerControl.listOfSequenceEditors[t].audioSequenceReference.data) }
     const i = this.audioLayerControl.listOfSequenceEditors[0].selectionStart
@@ -533,7 +759,7 @@ function audioLayerControl (e) {
       const i = CreateNewAudioSequence(44100)
       i.createTestTone(430.6640625, 441e3), t.setAudioSequence(i), t.zoomToFit()
     }
-  }, this.elementContext.createSequenceEditor = this.createSequenceEditor, this.elementContext.removeAllSequenceEditors = this.removeAllSequenceEditors, this.elementContext.setLinkMode = this.setLinkMode, this.elementContext.zoomIntoSelection = this.zoomIntoSelection, this.elementContext.zoomToFit = this.zoomToFit, this.elementContext.selectAll = this.selectAll, this.elementContext.selectFromS = this.selectFromS, this.elementContext.selectToE = this.selectToE, this.elementContext.goto_head = this.goto_head, this.elementContext.filterNormalize = this.filterNormalize, this.elementContext.filterFadeIn = this.filterFadeIn, this.elementContext.filterFadeOut = this.filterFadeOut, this.elementContext.filterGain = this.filterGain, this.elementContext.filterSilence = this.filterSilence, this.elementContext.toWave = this.toWave, this.elementContext.playToggle = this.playToggle, this.elementContext.play = this.play, this.elementContext.stop = this.stop, this.elementContext.toggleLoop = this.toggleLoop, this.elementContext.save = this.save, this.elementContext.testFilter = this.testFilter, this.elementContext.createTestSignal = this.createTestSignal, this.elementContext.copy = this.copy, this.elementContext.paste = this.paste, this.elementContext.cut = this.cut, this.elementContext.crop = this.crop, this.elementContext.del = this.del, this.filedb = void 0, this.createDropHandler = function () {
+  }, this.elementContext.createSequenceEditor = this.createSequenceEditor, this.elementContext.removeAllSequenceEditors = this.removeAllSequenceEditors, this.elementContext.setLinkMode = this.setLinkMode, this.elementContext.zoomIntoSelection = this.zoomIntoSelection, this.elementContext.zoomToFit = this.zoomToFit, this.elementContext.selectAll = this.selectAll, this.elementContext.selectFromS = this.selectFromS, this.elementContext.selectToE = this.selectToE, this.elementContext.goto_head = this.goto_head, this.elementContext.filterNormalize = this.filterNormalize, this.elementContext.filterFadeIn = this.filterFadeIn, this.elementContext.filterFadeOut = this.filterFadeOut, this.elementContext.filterGain = this.filterGain, this.elementContext.filterSilence = this.filterSilence, this.elementContext.toWave = this.toWave, this.elementContext.playToggle = this.playToggle, this.elementContext.play = this.play, this.elementContext.selectdbl = this.selectdbl, this.elementContext.stop = this.stop, this.elementContext.toggleLoop = this.toggleLoop, this.elementContext.save = this.save, this.elementContext.testFilter = this.testFilter, this.elementContext.createTestSignal = this.createTestSignal, this.elementContext.copy = this.copy, this.elementContext.paste = this.paste, this.elementContext.cut = this.cut, this.elementContext.crop = this.crop, this.elementContext.del = this.del, this.filedb = void 0, this.createDropHandler = function () {
     const e = new FileDropbox()
     e.defineDropHandler(this.elementContext), e.eventHost = this, e.onFinish = function () {
       document.getElementById('app-progress').style.width = '50%', activeAudioLayerControl = this.eventHost.elementContext, this.eventHost.audioPlayback.audioContext = this.eventHost.audioPlayback.audioContext || this.eventHost.audioPlayback.init(), this.eventHost.audioPlayback.audioContext.decodeAudioData(this.resultArrayBuffer, this.eventHost.decodeAudioFinished, this.eventHost.decodeAudioFailed)
@@ -593,67 +819,178 @@ function initializeAudioLayerControls () {
 }
 
 function AudioLayerSequenceEditor (e) {
-  function t (e, t) {
-    return ('' + e)
-      .length < t ? (new Array(t + 1)
-        .join('0') + e)
-        .slice(-t) : '' + e
+  function t(e, t) {
+    return ("" + e).length < t ? (new Array(t + 1).join("0") + e).slice(-t) : "" + e
   }
-
-  function i (e) {
-    const i = (Math.floor(e / 3600), Math.floor(e % 3600 / 60))
-    const o = Math.floor(e) % 3600 % 60
-    const n = (e % 1)
-      .toString()
-      .substring(1, 4)
-    return t(i, 2)
-      .toString() + ':' + t(o, 2)
-      .toString() + n
+  function i(e) {
+    var i = (Math.floor(e / 3600),
+    Math.floor(e % 3600 / 60))
+      , o = Math.floor(e) % 3600 % 60
+      , n = (e % 1).toString().substring(1, 4);
+    return t(i, 2).toString() + ":" + t(o, 2).toString() + n
   }
-  this.elementContext = e, this.elementContext.audioLayerSequenceEditor = this, this.audioLayerControl = void 0, this.canvasReference = void 0, this.audioSequenceReference = void 0, this.canvasTimer = void 0, this.canvasZoomBar = void 0, this.canvasHeight = 100, this.canvasWidth = e.parentNode.parentNode.clientWidth - 50, this.name = name, this.mouseInside = !1
-  , this.mouseDown = !1, this.mouseInsideOfSelection = !1, this.mouseSelectionOfStart = !1, this.mouseSelectionOfEnd = !1, this.mouseX = 0, this.mouseY = 0, this.previousMouseX = 0, this.previousMouseY = 0, this.selectionStart = 0, this.selectionEnd = 0, this.colorInactiveTop = '#d7e5c7', this.colorInactiveBottom = '#d7e5c7', this.colorActiveTop = '#EEE', this.colorActiveBottom = '#CCC', this.colorMouseDownTop = '#EEE', this.colorMouseDownBottom = '#CDC', this.colorSelectionStroke = 'rgba(255,0,0,0.5)', this.colorSelectionFill = 'rgba(255,0,0,0.2)', this.visualizationData = [], this.visualizationDataAll = [], this.hasFocus = !0, this.linkedEditors = [], this.movePos = 0, this.movementActive = !1, this.viewResolution = 10, this.viewPos = 0, this.playbackPos = 0, this.listOfHistoryDo = [], this.maxUnDos = 50, this.curHistoryDoPos = -1, this.storeTmpData = [], this.storeTmpPos = 0, this.storeTmpLen = 0, this.undoit = function (e) {
-    e && (e.dataAdd.length > 0 && this.audioSequenceReference.trim(e.addPos, e.addLen), e.dataDel.length > 0 && this.audioSequenceReference.insert(e.delPos, e.delLen, e.dataDel), this.selectionStart = e.selectStart, this.selectionEnd = e.selectEnd, this.updateVisualizationData())
-  }, this.redoit = function (e) {
-    e && (e.dataDel.length > 0 && this.audioSequenceReference.trim(e.delPos, e.delLen), e.dataAdd.length > 0 && this.audioSequenceReference.insert(e.addPos, e.addLen, e.dataAdd), this.selectionStart = e.selectStart, this.selectionEnd = e.selectEnd, this.updateVisualizationData())
-  }, this.undo = function () {
-    if (!(this.curHistoryDoPos < 0 || this.listOfHistoryDo.length == 0)) {
-      const e = this.listOfHistoryDo[this.curHistoryDoPos]
-      this.undoit(e), this.curHistoryDoPos--, this.curHistoryDoPos < -1 && (this.curHistoryDoPos = -1)
+  this.elementContext = e
+  this.elementContext.audioLayerSequenceEditor = this
+  this.audioLayerControl = void 0
+  this.canvasReference = void 0
+  this.audioSequenceReference = void 0
+  this.canvasTimer = void 0
+  this.canvasZoomBar = void 0
+  this.canvasHeight = 100
+  this.canvasWidth = e.parentNode.parentNode.clientWidth - 50
+  this.name = name
+  this.mouseInside = !1
+  this.mouseDown = !1
+  this.mouseInsideOfSelection = !1
+  this.mouseSelectionOfStart = !1
+  this.mouseSelectionOfEnd = !1
+  this.mouseX = 0
+  this.mouseY = 0
+  this.previousMouseX = 0
+  this.previousMouseY = 0
+  this.selectionStart = 0
+  this.selectionEnd = 0
+  this.colorInactiveTop = "#eee"
+  this.colorInactiveBottom = "#eee"
+  this.colorActiveTop = "#eee"
+  this.colorActiveBottom = "#eee"
+  this.colorMouseDownTop = "#eee"
+  this.colorMouseDownBottom = "#eee"
+  this.colorSelectionStroke = "rgba(14,56,67,0.5)"
+  this.colorSelectionFill = "rgba(14,56,67,0.2)"
+  this.visualizationData = []
+  this.visualizationDataAll = []
+  this.hasFocus = !0
+  this.linkedEditors = []
+  this.movePos = 0
+  this.movementActive = !1
+  this.viewResolution = 10
+  this.viewPos = 0
+  this.playbackPos = 0
+  this.listOfHistoryDo = []
+  this.maxUnDos = 50
+  this.curHistoryDoPos = -1
+  this.storeTmpData = []
+  this.storeTmpPos = 0
+  this.storeTmpLen = 0
+  this.undoit = function (e) {
+    e && (e.dataAdd.length > 0 && this.audioSequenceReference.trim(e.addPos, e.addLen),
+    e.dataDel.length > 0 && this.audioSequenceReference.insert(e.delPos, e.delLen, e.dataDel),
+    this.selectionStart = e.selectStart,
+    this.selectionEnd = e.selectEnd,
+    this.updateVisualizationData())
+  }
+  
+  this.redoit = function (e) {
+    e && (e.dataDel.length > 0 && this.audioSequenceReference.trim(e.delPos, e.delLen),
+    e.dataAdd.length > 0 && this.audioSequenceReference.insert(e.addPos, e.addLen, e.dataAdd),
+    this.selectionStart = e.selectStart,
+    this.selectionEnd = e.selectEnd,
+    this.updateVisualizationData())
+  }
+  
+  this.undo = function () {
+    if (!(this.curHistoryDoPos < 0 || 0 == this.listOfHistoryDo.length)) {
+      var e = this.listOfHistoryDo[this.curHistoryDoPos];
+      this.undoit(e),
+      this.curHistoryDoPos--,
+      this.curHistoryDoPos < -1 && (this.curHistoryDoPos = -1)
     }
-  }, this.redo = function () {
+  }
+  
+  this.redo = function () {
     if (!(this.curHistoryDoPos > this.listOfHistoryDo.length - 2)) {
-      const e = this.listOfHistoryDo[this.curHistoryDoPos + 1]
-      this.redoit(e), this.curHistoryDoPos++, this.curHistoryDoPos > this.listOfHistoryDo.length - 1 && (this.curHistoryDoPos = this.listOfHistoryDo.length - 1)
+      var e = this.listOfHistoryDo[this.curHistoryDoPos + 1];
+      this.redoit(e),
+      this.curHistoryDoPos++,
+      this.curHistoryDoPos > this.listOfHistoryDo.length - 1 && (this.curHistoryDoPos = this.listOfHistoryDo.length - 1)
     }
-  }, this.historyDoit = function (e, t, i, o, n, s, a, r, h) {
-    const l = new HistoryDo()
-    this.curHistoryDoPos != this.listOfHistoryDo.length - 1 && this.listOfHistoryDo.splice(this.curHistoryDoPos + 1, this.listOfHistoryDo.length - this.curHistoryDoPos - 1), l.dotype = e, l.setDataDel(t, i, o), l.setDataAdd(n, s, a), l.samplerate = this.audioSequenceReference.sampleRate, l.gain = this.audioSequenceReference.gain, l.selectStart = r, l.selectEnd = h, this.listOfHistoryDo.push(l), this.curHistoryDoPos = this.listOfHistoryDo.length - 1
-  }, this.getSelect = function () {
+  }
+  
+  this.historyDoit = function (e, t, i, o, n, s, a, r, h) {
+    var l = new HistoryDo;
+    this.curHistoryDoPos != this.listOfHistoryDo.length - 1 && this.listOfHistoryDo.splice(this.curHistoryDoPos + 1, this.listOfHistoryDo.length - this.curHistoryDoPos - 1),
+    l.dotype = e,
+    l.setDataDel(t, i, o),
+    l.setDataAdd(n, s, a),
+    l.samplerate = this.audioSequenceReference.sampleRate,
+    l.gain = this.audioSequenceReference.gain,
+    l.selectStart = r,
+    l.selectEnd = h,
+    this.listOfHistoryDo.push(l),
+    this.curHistoryDoPos = this.listOfHistoryDo.length - 1
+  }
+  
+  this.getSelect = function () {
     return {
       start: this.selectionStart < 0 ? 0 : this.selectionStart >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionStart,
       end: this.selectionEnd < 0 ? 0 : this.selectionEnd >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionEnd
     }
-  }, this.saveTmpData = function (e, t) {
+  }
+  
+  this.saveTmpData = function (e, t) {
     this.storeTmpData = this.audioSequenceReference.data.slice(e, t), this.storeTmpPos = e, this.storeTmpLen = t - e
-  }, this.storeHistoryDo = function (e, t, i) {
+  }
+  
+  this.storeHistoryDo = function (e, t, i) {
     let o = []
     let n = 0
     let s = 0
     const a = this.selectionStart
     const r = this.selectionEnd
     o = this.audioSequenceReference.data.slice(t, i), n = t, s = i - t, this.historyDoit(e, this.storeTmpData, this.storeTmpPos, this.storeTmpLen, o, n, s, a, r)
-  }, this.link = function (e) {
-    for (let t = 0; t < this.linkedEditors.length; ++t) { if (this.linkedEditors[t] === e) { return } }
-    this.linkedEditors.push(e), e.link(this)
-  }, this.updateSelectionForLinkedEditors = function (e) {
-    for (let t = 0; t < this.linkedEditors.length; ++t) { this.linkedEditors[t].selectionStart = this.selectionStart, this.linkedEditors[t].selectionEnd = this.selectionEnd, this.linkedEditors[t].viewPos == this.viewPos && this.linkedEditors[t].viewResolution == this.linkedEditors[t].viewResolution || (this.linkedEditors[t].viewPos = this.viewPos, this.linkedEditors[t].viewResolution = this.viewResolution, this.linkedEditors[t].updateVisualizationData()), this.linkedEditors[t].repaint(e) }
-  }, this.createEditor = function () {
-    this.channelIndex = this.audioLayerControl.listOfSequenceEditors.length - 1, this.audioLayerControl && this.audioLayerControl.listOfSequenceEditors.length == 1 && (this.canvasTimer = document.createElement('canvas'), this.canvasTimer.width = this.canvasWidth, this.canvasTimer.height = 20, this.canvasTimer.style.display = 'none', this.elementContext.appendChild(this.canvasTimer)), this.canvasReference = document.createElement('canvas'), this.canvasReference.setAttribute('class', 'audioLayerEditor'), this.canvasReference.width = this.canvasWidth, this.canvasReference.height = this.canvasHeight, this.canvasReference.style.border = '1px solid #b8d599', this.elementContext.appendChild(this.canvasReference), this.canvasZoomBar = document.createElement('canvas'), this.canvasZoomBar.width = this.canvasWidth, this.canvasZoomBar.height = 20, this.canvasZoomBar.style.border = '1px solid #a0a0a0', this.canvasZoomBar.style.display = 'none', this.elementContext.appendChild(this.canvasZoomBar), this.addEventlistener(), this.repaint()
-  }, this.setAudioSequence = function (e) {
+  }
+  
+  this.link = function (e) {
+    for (var t = 0; t < this.linkedEditors.length; ++t)
+      if (this.linkedEditors[t] === e)
+        return;
+    this.linkedEditors.push(e),
+    e.link(this)
+  }
+  
+  this.updateSelectionForLinkedEditors = function (e) {
+    for (var t = 0; t < this.linkedEditors.length; ++t)
+      this.linkedEditors[t].selectionStart = this.selectionStart,
+      this.linkedEditors[t].selectionEnd = this.selectionEnd,
+      this.linkedEditors[t].viewPos == this.viewPos && this.linkedEditors[t].viewResolution == this.linkedEditors[t].viewResolution || (this.linkedEditors[t].viewPos = this.viewPos,
+      this.linkedEditors[t].viewResolution = this.viewResolution,
+      this.linkedEditors[t].updateVisualizationData()),
+      this.linkedEditors[t].repaint(e)
+  }
+  
+  this.createEditor = function () {
+    this.channelIndex = this.audioLayerControl.listOfSequenceEditors.length - 1,
+    this.audioLayerControl && 1 == this.audioLayerControl.listOfSequenceEditors.length && (this.canvasTimer = document.createElement("canvas"),
+    this.canvasTimer.width = this.canvasWidth,
+    this.canvasTimer.height = 20,
+    this.canvasTimer.style.display = "none",
+    this.elementContext.appendChild(this.canvasTimer)),
+    this.canvasReference = document.createElement("canvas"),
+    this.canvasReference.setAttribute("class", "audioLayerEditor"),
+    this.canvasReference.width = this.canvasWidth,
+    this.canvasReference.height = this.canvasHeight,
+    this.canvasReference.style.border = "1px solid #0E3843",
+    this.elementContext.appendChild(this.canvasReference),
+    this.canvasZoomBar = document.createElement("canvas"),
+    this.canvasZoomBar.width = this.canvasWidth,
+    this.canvasZoomBar.height = 20,
+    this.canvasZoomBar.style.border = "1px solid #a0a0a0",
+    this.canvasZoomBar.style.display = "none",
+    this.elementContext.appendChild(this.canvasZoomBar),
+    this.addEventlistener(),
+    this.repaint()
+  }
+  
+  this.setAudioSequence = function (e) {
     this.audioSequenceReference = e, this.updateVisualizationData()
-  }, this.updateVisualizationData = function (e) {
+  }
+  
+  this.updateVisualizationData = function (e) {
     e || this.getAllData(), this.getDataInResolution(this.viewResolution, this.viewPos), this.repaint(e)
-  }, this.getAllData = function () {
+  }
+  
+  this.getAllData = function () {
     const e = this.getAbsoluteToSeconds(this.audioSequenceReference.data.length)
     this.visualizationDataAll = []
     const t = this.audioSequenceReference.data
@@ -687,7 +1024,9 @@ function AudioLayerSequenceEditor (e) {
       }
       this.visualizationDataAll.plotTechnique = 2
     }
-  }, this.getDataInResolution = function (e, t) {
+  }
+  
+  this.getDataInResolution = function (e, t) {
     this.visualizationData = []
     const i = this.audioSequenceReference.data
     const o = this.audioSequenceReference.sampleRate * t
@@ -720,120 +1059,247 @@ function AudioLayerSequenceEditor (e) {
       }
       this.visualizationData.plotTechnique = 2
     }
-  }, this.addEventlistener = function () {
-    this.canvasReference.eventHost = this, this.canvasReference.addEventListener('mouseover', function () {
-      this.eventHost.mouseInside = !0, this.eventHost.repaint(!0)
-    }, !0), this.canvasReference.onmouseout = function () {
+  }
+  
+  this.addEventlistener = function () {
+    this.canvasReference.eventHost = this,
+    this.canvasReference.addEventListener("mouseover", function() {
+      this.eventHost.mouseInside = !0,
+      this.eventHost.repaint(!0)
+    }, !0)
+
+    this.canvasReference.onmouseout = function() {
       if (this.eventHost.selectionStart > this.eventHost.selectionEnd) {
-        const e = this.eventHost.selectionStart
-        this.eventHost.selectionStart = this.eventHost.selectionEnd, this.eventHost.selectionEnd = e
+        var e = this.eventHost.selectionStart;
+        this.eventHost.selectionStart = this.eventHost.selectionEnd,
+        this.eventHost.selectionEnd = e
       }
-      this.eventHost.trimselection(), this.eventHost.mouseInsideOfSelection = !1, this.eventHost.mouseSelectionOfStart = !1, this.eventHost.mouseSelectionOfEnd = !1, this.eventHost.mouseDown = !1, this.eventHost.mouseInside = !1, this.eventHost.repaint(!0), this.eventHost.updateSelectionForLinkedEditors(!0)
-    }, this.canvasReference.onscroll = function (e) {}, this.canvasReference.onmousemove = function (e) {
-      this.eventHost.previousMouseX = this.eventHost.mouseX, this.eventHost.previousMouseY = this.eventHost.mouseY, this.eventHost.mouseX = e.clientX - this.offsetLeft, this.eventHost.mouseY = e.clientY - this.offsetTop
-      const t = this.eventHost.mouseX - this.eventHost.previousMouseX
-      if (this.eventHost.mouseDown && this.eventHost.movementActive == 0) {
-        if (this.eventHost.mouseInsideOfSelection) {
-          const i = this.eventHost.getPixelToAbsolute(this.eventHost.mouseX) - this.eventHost.getPixelToAbsolute(this.eventHost.previousMouseX)
-          this.eventHost.selectionStart += i, this.eventHost.selectionEnd += i, this.eventHost.audioLayerControl.audioSequenceSelectionUpdate()
-        } else { this.eventHost.mouseSelectionOfStart ? this.eventHost.selectionStart = this.eventHost.getPixelToAbsolute(this.eventHost.mouseX) : (this.eventHost.selectionEnd = this.eventHost.getPixelToAbsolute(this.eventHost.mouseX), this.eventHost.selectionEnd < 0 && (this.eventHost.selectionEnd = this.eventHost.getPixelToAbsolute(this.eventHost.mouseX))) }
-      }
-      if (this.eventHost.mouseDown && this.eventHost.movementActive) {
-        const o = this.eventHost.viewResolution / this.eventHost.canvasReference.width
-        this.eventHost.viewPos -= t * o, this.selectionStart -= t * o, this.selectionEnd -= t * o, this.eventHost.updateVisualizationData(!0)
-      }
-      this.eventHost.trimselection(), this.eventHost.repaint(!0), this.eventHost.updateSelectionForLinkedEditors(!0)
-    }, this.canvasReference.onmousedown = function (e) {
-      if (this.eventHost.mouseDown = !0, this.eventHost.movementActive == 0) {
-        const t = this.eventHost.getAbsoluteToPixel(this.eventHost.selectionStart)
-        const i = this.eventHost.getAbsoluteToPixel(this.eventHost.selectionEnd)
-        this.eventHost.mouseX - 5 > t && this.eventHost.mouseX + 5 < i ? this.eventHost.mouseInsideOfSelection = !0 : this.eventHost.mouseX - 5 < t && this.eventHost.mouseX + 5 > t ? this.eventHost.mouseSelectionOfStart = !0 : this.eventHost.mouseX - 5 < i && this.eventHost.mouseX + 5 > i ? this.eventHost.mouseSelectionOfEnd = !0 : (this.eventHost.selectionStart = this.eventHost.getPixelToAbsolute(this.eventHost.mouseX), this.eventHost.selectionEnd = this.eventHost.selectionStart)
-      }
-      this.eventHost.trimselection(), focusOnAudioLayerSequenceEditor = this.eventHost, this.eventHost.repaint(!0), this.eventHost.updateSelectionForLinkedEditors(!0)
-    }, this.canvasReference.onmouseup = function () {
-      if (this.eventHost.selectionStart > this.eventHost.selectionEnd) {
-        const e = this.eventHost.selectionStart
-        this.eventHost.selectionStart = this.eventHost.selectionEnd, this.eventHost.selectionEnd = e
-      }
-      this.eventHost.trimselection(), this.eventHost.mouseInsideOfSelection = !1, this.eventHost.mouseSelectionOfStart = !1, this.eventHost.mouseSelectionOfEnd = !1, this.eventHost.mouseDown = !1, this.eventHost.repaint(!0), this.eventHost.updateSelectionForLinkedEditors(!0)
-    }, this.canvasReference.ondblclick = function () {
-      this.eventHost.selectionStart != this.eventHost.selectionEnd ? (this.eventHost.selectionStart = 0, this.eventHost.selectionEnd = 0) : (this.eventHost.selectionStart = 0, this.eventHost.selectionEnd = this.eventHost.getPixelToAbsolute(this.eventHost.canvasReference.width)), this.eventHost.mouseDown = !1, this.eventHost.mouseSelectionOfStart = !1, this.eventHost.mouseSelectionOfEnd = !1, this.eventHost.mouseInsideOfSelection = !1, focusOnAudioLayerSequenceEditor = void 0, this.eventHost.repaint(!0), this.eventHost.updateSelectionForLinkedEditors(!0)
+      this.eventHost.trimselection(),
+      this.eventHost.mouseInsideOfSelection = !1,
+      this.eventHost.mouseSelectionOfStart = !1,
+      this.eventHost.mouseSelectionOfEnd = !1,
+      this.eventHost.mouseDown = !1,
+      this.eventHost.mouseInside = !1,
+      this.eventHost.repaint(!0),
+      this.eventHost.updateSelectionForLinkedEditors(!0)
     }
-  }, this.trimselection = function () {
+
+    this.canvasReference.onscroll = function(e) {}
+
+    this.canvasReference.onmousemove = function(e) {
+      this.eventHost.previousMouseX = this.eventHost.mouseX,
+      this.eventHost.previousMouseY = this.eventHost.mouseY,
+      this.eventHost.mouseX = e.clientX - this.offsetLeft,
+      this.eventHost.mouseY = e.clientY - this.offsetTop;
+      var t = this.eventHost.mouseX - this.eventHost.previousMouseX;
+      if (this.eventHost.mouseDown && 0 == this.eventHost.movementActive)
+        if (this.eventHost.mouseInsideOfSelection) {
+          var i = this.eventHost.getPixelToAbsolute(this.eventHost.mouseX) - this.eventHost.getPixelToAbsolute(this.eventHost.previousMouseX);
+          this.eventHost.selectionStart += i,
+          this.eventHost.selectionEnd += i,
+          this.eventHost.audioLayerControl.audioSequenceSelectionUpdate()
+        } else
+          this.eventHost.mouseSelectionOfStart ? this.eventHost.selectionStart = this.eventHost.getPixelToAbsolute(this.eventHost.mouseX) : (this.eventHost.selectionEnd = this.eventHost.getPixelToAbsolute(this.eventHost.mouseX),
+          this.eventHost.selectionEnd < 0 && (this.eventHost.selectionEnd = this.eventHost.getPixelToAbsolute(this.eventHost.mouseX)));
+      if (this.eventHost.mouseDown && this.eventHost.movementActive) {
+        var o = this.eventHost.viewResolution / this.eventHost.canvasReference.width;
+        this.eventHost.viewPos -= t * o,
+        this.selectionStart -= t * o,
+        this.selectionEnd -= t * o,
+        this.eventHost.updateVisualizationData(!0)
+      }
+      this.eventHost.trimselection(),
+      this.eventHost.repaint(!0),
+      this.eventHost.updateSelectionForLinkedEditors(!0)
+    }
+
+    this.canvasReference.onmousedown = function(e) {
+      if (this.eventHost.mouseDown = !0,
+      0 == this.eventHost.movementActive) {
+        var t = this.eventHost.getAbsoluteToPixel(this.eventHost.selectionStart)
+          , i = this.eventHost.getAbsoluteToPixel(this.eventHost.selectionEnd);
+        this.eventHost.mouseX - 5 > t && this.eventHost.mouseX + 5 < i ? this.eventHost.mouseInsideOfSelection = !0 : this.eventHost.mouseX - 5 < t && this.eventHost.mouseX + 5 > t ? this.eventHost.mouseSelectionOfStart = !0 : this.eventHost.mouseX - 5 < i && this.eventHost.mouseX + 5 > i ? this.eventHost.mouseSelectionOfEnd = !0 : (this.eventHost.selectionStart = this.eventHost.getPixelToAbsolute(this.eventHost.mouseX),
+        this.eventHost.selectionEnd = this.eventHost.selectionStart,
+        console.log("Set " + this.eventHost.selectionStart))
+      }
+      this.eventHost.trimselection(),
+      focusOnAudioLayerSequenceEditor = this.eventHost,
+      this.eventHost.repaint(!0),
+      this.eventHost.updateSelectionForLinkedEditors(!0)
+    }
+
+    this.canvasReference.onmouseup = function() {
+      if (this.eventHost.selectionStart > this.eventHost.selectionEnd) {
+        var e = this.eventHost.selectionStart;
+        this.eventHost.selectionStart = this.eventHost.selectionEnd,
+        this.eventHost.selectionEnd = e
+      }
+      this.eventHost.trimselection(),
+      this.eventHost.mouseInsideOfSelection = !1,
+      this.eventHost.mouseSelectionOfStart = !1,
+      this.eventHost.mouseSelectionOfEnd = !1,
+      this.eventHost.mouseDown = !1,
+      this.eventHost.repaint(!0),
+      this.eventHost.updateSelectionForLinkedEditors(!0)
+    }
+
+    this.canvasReference.ondblclick = function() {
+      this.eventHost.selectionStart != this.eventHost.selectionEnd ? (this.eventHost.selectionStart = 0,
+      this.eventHost.selectionEnd = 0) : (this.eventHost.selectionStart = 0,
+      this.eventHost.selectionEnd = this.eventHost.getPixelToAbsolute(this.eventHost.canvasReference.width)),
+      this.eventHost.mouseDown = !1,
+      this.eventHost.mouseSelectionOfStart = !1,
+      this.eventHost.mouseSelectionOfEnd = !1,
+      this.eventHost.mouseInsideOfSelection = !1,
+      focusOnAudioLayerSequenceEditor = void 0,
+      this.eventHost.repaint(!0),
+      this.eventHost.updateSelectionForLinkedEditors(!0)
+    }
+  }
+  
+  this.trimselection = function () {
     this.selectionStart = Math.max(0, this.selectionStart)
-  }, this.repaint = function (e) {
+  }
+  this.repaint = function (e) {
     if (void 0 !== this.canvasReference) {
       const t = this.canvasReference.getContext('2d')
       if (this.clearCanvas(t), this.paintBackground(t), this.canvasTimer && !e && this.clearCanvas(this.canvasTimer.getContext('2d')), void 0 === this.audioSequenceReference) { this.paintEmpty(t) } else {
         this.paintWaveform(t), this.paintSelector(t), this.paintTextInfo(t), this.canvasTimer && !e && this.paintTimer(this.canvasTimer.getContext('2d'))
         const i = this.canvasZoomBar.getContext('2d')
-        this.canvasZoomBar.style.display = 'none', this.viewResolution < this.getAbsoluteToSeconds(this.audioSequenceReference.data.length) && this.channelIndex == this.audioLayerControl.listOfSequenceEditors.length - 1 && (this.canvasZoomBar.style.display = 'block', e || (this.paintZoomBar(i, this)))
+        this.canvasZoomBar.style.display = 'none', this.viewResolution < this.getAbsoluteToSeconds(this.audioSequenceReference.data.length) && this.channelIndex == this.audioLayerControl.listOfSequenceEditors.length - 1 && (this.canvasZoomBar.style.display = 'inline', e || (this.paintZoomBar(i, this)))
       }
     }
-  }, this.clearCanvas = function (e) {
+  }
+  
+  this.clearCanvas = function (e) {
     e.clearRect(0, 0, this.canvasReference.width, this.canvasReference.height)
-  }, this.paintEmpty = function (e) {
-    const t = e.font
-    e.textAlign, e.textBaseline
-    e.font = 'italic 40px Calibri', e.textAlign = 'center', e.textBaseline = 'middle', this.paintTextWithShadow(str_drag, e.canvas.clientWidth / 2, e.canvas.clientHeight / 2, 'rgba(0,0,0,0.5)', e), e.font = t, e.textAlign = 'left', e.textBaseline = 'top'
-  }, this.paintBackground = function (e) {
-    const t = e.createLinearGradient(0, 0, 0, this.canvasReference.height)
-    t.addColorStop(0, this.mouseInside ? this.mouseDown ? this.colorMouseDownTop : this.colorActiveTop : this.colorInactiveTop), t.addColorStop(1, this.mouseInside ? this.mouseDown ? this.colorMouseDownBottom : this.colorActiveBottom : this.colorInactiveBottom), e.fillStyle = t, e.fillRect(0, 0, this.canvasReference.width, this.canvasReference.height)
-  }, this.paintTimerBackground = function (e) {
-    const t = this.canvasTimer.width
-    const i = this.canvasTimer.height
-    const o = Math.ceil(this.canvasTimer.height / 2)
-    e.strokeStyle = 'rgba(6, 6, 6,0.5)', e.lineWidth = 1, e.beginPath(), e.moveTo(0, 0), e.lineTo(0, i), e.moveTo(t, 0), e.lineTo(t, i), e.moveTo(0, o), e.lineTo(t, o), e.stroke()
-  }, this.paintZoomAllData = function (e) {
-    const t = this.audioSequenceReference
-    const i = this.canvasZoomBar.height / 2
-    const o = t.gain < 1 ? 1 : 1 / t.gain
-    t.data
-    if (e.strokeStyle = 'rgba(80,80,80,0.4)', e.beginPath(), e.moveTo(0, i), this.visualizationDataAll.plotTechnique == 1) {
+  }
+  
+  this.paintEmpty = function (e) {
+    var t = e.font;
+    e.textAlign,
+    e.textBaseline;
+    e.font = "italic 40px Calibri",
+    e.textAlign = "center",
+    e.textBaseline = "middle",
+    this.paintTextWithShadow(str_drag, e.canvas.clientWidth / 2, e.canvas.clientHeight / 2, "rgba(0,0,0,0.5)", e),
+    e.font = t,
+    e.textAlign = "left",
+    e.textBaseline = "top"
+  }
+  
+  this.paintBackground = function (e) {
+    var t = e.createLinearGradient(0, 0, 0, this.canvasReference.height);
+    t.addColorStop(0, this.mouseInside ? this.mouseDown ? this.colorMouseDownTop : this.colorActiveTop : this.colorInactiveTop),
+    t.addColorStop(1, this.mouseInside ? this.mouseDown ? this.colorMouseDownBottom : this.colorActiveBottom : this.colorInactiveBottom),
+    e.fillStyle = t,
+    e.fillRect(0, 0, this.canvasReference.width, this.canvasReference.height)
+  }
+  
+  this.paintTimerBackground = function (e) {
+    var t = this.canvasTimer.width
+      , i = this.canvasTimer.height
+      , o = Math.ceil(this.canvasTimer.height / 2);
+    e.strokeStyle = "rgba(6, 6, 6,0.5)",
+    e.lineWidth = 1,
+    e.beginPath(),
+    e.moveTo(0, 0),
+    e.lineTo(0, i),
+    e.moveTo(t, 0),
+    e.lineTo(t, i),
+    e.moveTo(0, o),
+    e.lineTo(t, o),
+    e.stroke()
+  }
+  
+  this.paintZoomAllData = function (e) {
+    var t = this.audioSequenceReference
+      , i = this.canvasZoomBar.height / 2
+      , o = t.gain < 1 ? 1 : 1 / t.gain;
+    t.data;
+    if (e.strokeStyle = "rgba(80,80,80,0.4)",
+    e.beginPath(),
+    e.moveTo(0, i),
+    1 == this.visualizationDataAll.plotTechnique)
       for (var n = 0; n < this.canvasReference.width; ++n) {
-        const s = this.visualizationDataAll[n]
-        e.moveTo(n + 0.5, i + s.min * o * -i), e.lineTo(n + 0.5, i + s.max * o * -i + 1)
+        var s = this.visualizationDataAll[n];
+        e.moveTo(n + .5, i + s.min * o * -i),
+        e.lineTo(n + .5, i + s.max * o * -i + 1)
       }
-    } else if (this.visualizationDataAll.plotTechnique == 2) {
+    else if (2 == this.visualizationDataAll.plotTechnique)
       for (var n = 0; n < this.visualizationDataAll.length; ++n) {
-        const a = this.visualizationDataAll[n].x
-        const r = i + this.visualizationDataAll[n].y * o * -i
-        e.lineTo(a, r), e.moveTo(a + 1, r - 1), e.lineTo(a + 1, r + 1), e.moveTo(a - 1, r - 1), e.lineTo(a - 1, r + 1), e.moveTo(a - 1, r + 1), e.lineTo(a + 1, r + 1), e.moveTo(a - 1, r - 1), e.lineTo(a + 1, r - 1), e.moveTo(a, r)
+        var a = this.visualizationDataAll[n].x
+          , r = i + this.visualizationDataAll[n].y * o * -i;
+        e.lineTo(a, r),
+        e.moveTo(a + 1, r - 1),
+        e.lineTo(a + 1, r + 1),
+        e.moveTo(a - 1, r - 1),
+        e.lineTo(a - 1, r + 1),
+        e.moveTo(a - 1, r + 1),
+        e.lineTo(a + 1, r + 1),
+        e.moveTo(a - 1, r - 1),
+        e.lineTo(a + 1, r - 1),
+        e.moveTo(a, r)
       }
-    }
-    e.stroke(), e.strokeStyle = 'rgba(0, 0, 0,0.5)', e.beginPath(), e.moveTo(0, i), e.lineTo(this.canvasReference.width, i), e.stroke()
-  }, this.paintZoomBar = function (e, t) {
+    e.stroke(),
+    e.strokeStyle = "rgba(0, 0, 0,0.5)",
+    e.beginPath(),
+    e.moveTo(0, i),
+    e.lineTo(this.canvasReference.width, i),
+    e.stroke()
+  }
+  
+  this.paintZoomBar = function (e, t) {
     // var i = "/wp-content/themes/certifyad/librerias/pl/audiotool/getparam.php?name=zoom&viR=" + this.viewResolution + "&viP=" + this.viewPos + "&sam=" + this.audioSequenceReference.sampleRate + "&d1=" + this.audioSequenceReference.data.length + "&v1=" + this.canvasReference.width + "&vh=" + this.canvasZoomBar.height;
-    const izoom = {
-      'v1': this.canvasReference.width,
-      'vh': this.canvasZoomBar.height,
-      'vs1': this.viewPos,
-      've2': this.viewResolution
-    }
-    const o = izoom.v1
-    const n = izoom.vh
-    const s = izoom.vs1
-    const a = izoom.ve2
-    e.clearRect(0, 0, o, n), t.paintZoomAllData(e), e.fillStyle = 'rgba(0,0,0,0.3)', s > 0 && e.fillRect(0, 0, s, n), o > a && e.fillRect(a, 0, o - a, n)
-  }, this.paintWaveform = function (e) {
-    const t = this.audioSequenceReference
-    const i = this.canvasReference.height / 2
-    const o = t.gain < 1 ? 1 : 1 / t.gain
-    t.data
-    if (e.strokeStyle = 'rgba(0, 0,0,0.5)', e.beginPath(), e.moveTo(0, i), this.visualizationData.plotTechnique == 1) {
+    var o = this.canvasReference.width
+    var n = this.canvasZoomBar.height
+    var s = this.viewPos * this.canvasReference.width / (this.audioSequenceReference.data.length / this.audioSequenceReference.sampleRate)
+    var a = (this.viewPos + this.viewResolution) * this.canvasReference.width / (this.audioSequenceReference.data.length / this.audioSequenceReference.sampleRate);
+    e.clearRect(0, 0, o, n),
+    t.paintZoomAllData(e),
+    e.fillStyle = "rgba(0,0,0,0.3)",
+    s > 0 && e.fillRect(0, 0, s, n),
+    o > a && e.fillRect(a, 0, o - a, n)
+  }
+  
+  this.paintWaveform = function (e) {
+    var t = this.audioSequenceReference
+      , i = this.canvasReference.height / 2
+      , o = t.gain < 1 ? 1 : 1 / t.gain;
+    t.data;
+    if (e.strokeStyle = "rgba(0, 0,0,0.5)",
+    e.beginPath(),
+    e.moveTo(0, i),
+    1 == this.visualizationData.plotTechnique)
       for (var n = 0; n < this.canvasReference.width; ++n) {
-        const s = this.visualizationData[n]
-        e.moveTo(n + 0.5, i + s.min * o * -i), e.lineTo(n + 0.5, i + s.max * o * -i + 1)
+        var s = this.visualizationData[n];
+        e.moveTo(n + .5, i + s.min * o * -i),
+        e.lineTo(n + .5, i + s.max * o * -i + 1)
       }
-    } else if (this.visualizationData.plotTechnique == 2) {
+    else if (2 == this.visualizationData.plotTechnique)
       for (var n = 0; n < this.visualizationData.length; ++n) {
-        const a = this.visualizationData[n].x
-        const r = i + this.visualizationData[n].y * o * -i
-        e.lineTo(a, r), e.moveTo(a + 1, r - 1), e.lineTo(a + 1, r + 1), e.moveTo(a - 1, r - 1), e.lineTo(a - 1, r + 1), e.moveTo(a - 1, r + 1), e.lineTo(a + 1, r + 1), e.moveTo(a - 1, r - 1), e.lineTo(a + 1, r - 1), e.moveTo(a, r)
+        var a = this.visualizationData[n].x
+          , r = i + this.visualizationData[n].y * o * -i;
+        e.lineTo(a, r),
+        e.moveTo(a + 1, r - 1),
+        e.lineTo(a + 1, r + 1),
+        e.moveTo(a - 1, r - 1),
+        e.lineTo(a - 1, r + 1),
+        e.moveTo(a - 1, r + 1),
+        e.lineTo(a + 1, r + 1),
+        e.moveTo(a - 1, r - 1),
+        e.lineTo(a + 1, r - 1),
+        e.moveTo(a, r)
       }
-    }
-    e.stroke(), e.strokeStyle = 'rgba(0, 0, 0,0.5)', e.beginPath(), e.moveTo(0, i), e.lineTo(this.canvasReference.width, i), e.stroke()
-  }, this.paintTimer = function (e) {
+    e.stroke(),
+    e.strokeStyle = "rgba(0, 0, 0,0.5)",
+    e.beginPath(),
+    e.moveTo(0, i),
+    e.lineTo(this.canvasReference.width, i),
+    e.stroke()
+  }
+  
+  this.paintTimer = function (e) {
     this.canvasTimer.style.display = ''
     //  var t = "/wp-content/themes/certifyad/librerias/pl/audiotool/getparam.php?name=timer&w1=" + this.canvasTimer.width + "&h1=" + this.canvasTimer.height + "&st1=" + this.viewPos + "&ed1=" + this.viewResolution;
     const tpaint = {
@@ -849,7 +1315,7 @@ function AudioLayerSequenceEditor (e) {
     const s = tpaint.st
     const a = tpaint.len
     const r = tpaint.unit
-    e.clearRect(0, 0, i, o), e.strokeStyle = 'rgba(255, 0, 0, 0.5)', e.lineWidth = 1, e.beginPath(), e.moveTo(0, 0), e.lineTo(0, o), e.moveTo(i, 0), e.lineTo(i, o), e.moveTo(0, n), e.lineTo(i, n), e.fillText(s.toFixed(2) + 's', 2, n - 2)
+    e.clearRect(0, 0, i, o), e.strokeStyle = 'rgba(14,56,67, 0.5)', e.lineWidth = 1, e.beginPath(), e.moveTo(0, 0), e.lineTo(0, o), e.moveTo(i, 0), e.lineTo(i, o), e.moveTo(0, n), e.lineTo(i, n), e.fillText(s.toFixed(2) + 's', 2, n - 2)
     for (let h = 0; h < a;) {
       h += r
       const l = Math.ceil(h * i / a)
@@ -859,17 +1325,34 @@ function AudioLayerSequenceEditor (e) {
       .toFixed(2) + 's'
     e.fillText(c, i - (e.measureText(c)
       .width + 1), n - 2), e.stroke()
-  }, this.paintSelector = function (e) {
-    const t = this.getAbsoluteToPixel(this.selectionStart)
-    const o = this.getAbsoluteToPixel(this.selectionEnd)
+  }
+  
+  this.paintSelector = function (e) {
+    var t = this.getAbsoluteToPixel(this.selectionStart)
+      , o = this.getAbsoluteToPixel(this.selectionEnd);
     if (this.selectionStart !== this.selectionEnd) {
-      const n = t < o ? t : o
-      const s = t < o ? o - t : t - o
-      e.fillStyle = this.colorSelectionFill, e.fillRect(n, 0, s, this.canvasReference.height), e.strokeStyle = this.colorSelectionStroke, e.strokeRect(n, 0, s, this.canvasReference.height)
-    } else { e.strokeStyle = this.colorSelectionStroke, e.beginPath(), e.moveTo(t, 0), e.lineTo(t, this.canvasReference.height), e.stroke() }
-    const a = this.getAbsoluteToPixel(this.playbackPos)
-    a > 0 && a < this.canvasReference.width && (e.strokeStyle = this.colorSelectionStroke, e.beginPath(), e.moveTo(a, 0), e.lineTo(a, this.canvasReference.height), e.stroke(), this.paintTextWithShadow(i(this.getAbsoluteToSeconds(this.playbackPos)), a + 5, 70, 'rgb(255,0,0)', e))
-  }, this.getPeakInFrame = function (e, t, i) {
+      var n = t < o ? t : o
+        , s = t < o ? o - t : t - o;
+      e.fillStyle = this.colorSelectionFill,
+      e.fillRect(n, 0, s, this.canvasReference.height),
+      e.strokeStyle = this.colorSelectionStroke,
+      e.strokeRect(n, 0, s, this.canvasReference.height)
+    } else
+      e.strokeStyle = this.colorSelectionStroke,
+      e.beginPath(),
+      e.moveTo(t, 0),
+      e.lineTo(t, this.canvasReference.height),
+      e.stroke();
+    var a = this.getAbsoluteToPixel(this.playbackPos);
+    a > 0 && a < this.canvasReference.width && (e.strokeStyle = this.colorSelectionStroke,
+    e.beginPath(),
+    e.moveTo(a, 0),
+    e.lineTo(a, this.canvasReference.height),
+    e.stroke(),
+    this.paintTextWithShadow(i(this.getAbsoluteToSeconds(this.playbackPos)), a + 5, 70, "rgb(14,56,67)", e))
+  }
+  
+  this.getPeakInFrame = function (e, t, i) {
     const o = Math.round(e)
     const n = Math.round(t)
     let s = 1
@@ -883,100 +1366,188 @@ function AudioLayerSequenceEditor (e) {
       min: s,
       max: a
     }
-  }, this.paintTextInfo = function (e) {
+  }
+  
+  this.paintTextInfo = function (e) {
     const t = i(this.getAbsoluteToSeconds(this.selectionStart))
     const o = i(this.getAbsoluteToSeconds(this.selectionEnd))
     const n = i(this.getAbsoluteToSeconds(this.selectionEnd - this.selectionStart))
-    this.paintTextWithShadow(str_selection + t + ' - ' + o + ' (' + n + ')', 1, 5, 'rgb(255,0,0)', e)
+    this.paintTextWithShadow(str_selection + t + ' - ' + o + ' (' + n + ')', 1, 5, 'rgb(14,56,67)', e)
     this.paintTextWithShadow(str_position + i(this.viewPos), 1, 90, 'rgb(0,0,0)', e)
     this.paintTextWithShadow(this.title, 1, 40, 'rgba(0,0,0,1)', e)
-  }, this.paintTextWithShadow = function (e, t, i, o, n) {
-    n.fillStyle = 'rgba(0,0,0,0.25)', n.fillText(e, t + 1, i + 1), n.fillStyle = o, n.fillText(e, t, i)
-  }, this.getSelectionInDataRange = function () {
+  }
+  
+  this.paintTextWithShadow = function (e, t, i, o, n) {
+    n.fillStyle = "rgba(0,0,0,0.25)",
+    n.fillText(e, t + 1, i + 1),
+    n.fillStyle = o,
+    n.fillText(e, t, i)
+  }
+  
+  this.getSelectionInDataRange = function () {
     return {
       start: Math.round(this.audioSequenceReference.data.length / this.canvasReference.width * this.selectionStart),
       end: Math.round(this.audioSequenceReference.data.length / this.canvasReference.width * this.selectionEnd)
     }
-  }, this.selectDataInRange = function (e, t) {
-    this.selectionStart = Math.round(this.canvasReference.width / this.audioSequenceReference.data.length * e), this.selectionEnd = Math.round(this.canvasReference.width / this.audioSequenceReference.data.length * t)
-  }, this.getPixelToAbsolute = function (e) {
+  }
+  
+  this.selectDataInRange = function (e, t) {
+    this.selectionStart = Math.round(this.canvasReference.width / this.audioSequenceReference.data.length * e),
+    this.selectionEnd = Math.round(this.canvasReference.width / this.audioSequenceReference.data.length * t)
+  }
+  
+  this.getPixelToAbsolute = function (e) {
     if (void 0 === this.audioSequenceReference) { return 0 }
     const t = this.viewResolution * this.audioSequenceReference.sampleRate
     const i = this.viewPos * this.audioSequenceReference.sampleRate
     return Math.round(t / this.canvasReference.width * e + i)
-  }, this.getAbsoluteToPixel = function (e) {
+  }
+
+  this.getAbsoluteToPixel = function (e) {
     if (void 0 === this.audioSequenceReference) { return 0 }
     const t = this.viewResolution * this.audioSequenceReference.sampleRate
     return (e - this.viewPos * this.audioSequenceReference.sampleRate) / t * this.canvasReference.width
-  }, this.getAbsoluteToSeconds = function (e) {
+  }
+
+  this.getAbsoluteToSeconds = function (e) {
     return void 0 === this.audioSequenceReference ? 0 : e / this.audioSequenceReference.sampleRate
-  }, this.getSecondsToAbsolute = function (e) {
+  }
+
+  this.getSecondsToAbsolute = function (e) {
     return void 0 === this.audioSequenceReference ? 0 : e * this.audioSequenceReference.sampleRate
-  }, this.zoomIntoSelection = function () {
+  }
+  
+  this.zoomIntoSelection = function () {
     this.selectionStart != this.selectionEnd && (this.viewResolution = this.getAbsoluteToSeconds(this.selectionEnd - this.selectionStart), this.viewPos = this.getAbsoluteToSeconds(this.selectionStart), this.updateVisualizationData(), this.updateSelectionForLinkedEditors())
-  }, this.zoomToFit = function () {
+  }
+  
+  this.zoomToFit = function () {
     this.viewPos = 0, this.viewResolution = this.getAbsoluteToSeconds(this.audioSequenceReference.data.length), this.updateVisualizationData(), this.updateSelectionForLinkedEditors()
-  }, this.filterNormalize = function () {
+  }
+  
+  this.filterNormalize = function () {
     const e = this.selectionStart < 0 ? 0 : this.selectionStart >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionStart
     const t = this.selectionEnd < 0 ? 0 : this.selectionEnd >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionEnd
     e == t ? (this.saveTmpData(0, this.audioSequenceReference.data.length), this.audioSequenceReference.filterNormalize(), this.storeHistoryDo('filterNormalize', 0, this.audioSequenceReference.data.length)) : (this.saveTmpData(e, t), this.audioSequenceReference.filterNormalize(e, t - e), this.storeHistoryDo('filterNormalize', e, t)), this.updateVisualizationData()
-  }, this.filterFade = function (e) {
+  }
+  
+  this.filterFade = function (e) {
     const t = this.selectionStart < 0 ? 0 : this.selectionStart >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionStart
     const i = this.selectionEnd < 0 ? 0 : this.selectionEnd >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionEnd
     t == i ? (this.saveTmpData(0, this.audioSequenceReference.data.length), this.audioSequenceReference.filterLinearFade(!0 === e ? 0 : 1, !0 === e ? 1 : 0), this.storeHistoryDo('filterFade', 0, this.audioSequenceReference.data.length)) : (this.saveTmpData(t, i), this.audioSequenceReference.filterLinearFade(!0 === e ? 0 : 1, !0 === e ? 1 : 0, t, i - t), this.storeHistoryDo('filterFade', t, i)), this.updateVisualizationData()
-  }, this.filterGain = function (e) {
+  }
+  
+  this.filterGain = function (e) {
     const t = this.selectionStart < 0 ? 0 : this.selectionStart >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionStart
     const i = this.selectionEnd < 0 ? 0 : this.selectionEnd >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionEnd
     t == i ? (this.saveTmpData(0, this.audioSequenceReference.data.length), this.audioSequenceReference.filterGain(this.getQuantity(e)), this.storeHistoryDo('filterGain', 0, this.audioSequenceReference.data.length)) : (this.saveTmpData(t, i), this.audioSequenceReference.filterGain(this.getQuantity(e), t, i - t), this.storeHistoryDo('filterGain', t, i)), this.updateVisualizationData()
-  }, this.filterSilence = function () {
+  }
+  
+  this.filterSilence = function () {
     const e = this.selectionStart < 0 ? 0 : this.selectionStart >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionStart
     const t = this.selectionEnd < 0 ? 0 : this.selectionEnd >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionEnd
     e == t ? (this.saveTmpData(0, this.audioSequenceReference.data.length), this.audioSequenceReference.filterSilence(), this.storeHistoryDo('filterSilence', 0, this.audioSequenceReference.data.length)) : (this.saveTmpData(e, t), this.audioSequenceReference.filterSilence(e, t - e), this.storeHistoryDo('filterSilence', e, t)), this.updateVisualizationData()
-  }, this.getDecibel = function (e, t) {
+  }
+  
+  this.getDecibel = function (e, t) {
     return 20 * Math.log(e / t) / Math.LN10
-  }, this.getQuantity = function (e) {
+  }
+  
+  this.getQuantity = function (e) {
     return Math.exp(e * Math.LN10 / 20)
-  }, this.clipboardAudioSequence = void 0, this.selectAll = function (e) {
-    this.selectionStart = 0, this.selectionEnd = this.audioSequenceReference.data.length, this.repaint()
-  }, this.selectFromS = function (e) {
-    this.selectionStart != 0 && (this.selectionEnd = Math.min(this.selectionStart, this.selectionEnd), this.selectionStart = 0, this.repaint())
-  }, this.selectToE = function (e) {
-    this.selectionEnd != this.audioSequenceReference.data.length && (this.selectionStart = Math.max(this.selectionStart, this.selectionEnd), this.selectionEnd = this.audioSequenceReference.data.length, this.repaint())
-  }, this.goto_head = function (e) {
-    this.selectionStart = 0, this.selectionEnd = 0, this.repaint()
-  }, this.set_start_sel = function (e) {
-    this.selectionStart = this.playbackPos, this.selectionEnd = this.playbackPos, this.repaint()
-  }, this.set_end_sel = function (e) {
-    this.selectionEnd = this.playbackPos, this.repaint()
-  }, this.copy = function (e) {
+  }
+  this.clipboardAudioSequence = void 0
+  
+  this.selectAll = function (e) {
+    this.selectionStart = 0,
+    this.selectionEnd = this.audioSequenceReference.data.length,
+    this.repaint()
+  }
+  this.selectFromS = function (e) {
+    this.selectionStart != 0 && (this.selectionEnd = Math.min(this.selectionStart, this.selectionEnd),
+    this.selectionStart = 0,
+    this.repaint())
+  }
+  
+  this.selectToE = function (e) {
+    this.selectionEnd != this.audioSequenceReference.data.length && (this.selectionStart = Math.max(this.selectionStart, this.selectionEnd),
+    this.selectionEnd = this.audioSequenceReference.data.length,
+    this.repaint())
+  }
+  
+  this.goto_head = function (e) {
+    this.selectionStart = 0,
+    this.selectionEnd = 0,
+    this.repaint()
+  }
+  
+  this.set_start_sel = function (e) {
+    this.selectionStart = this.playbackPos,
+    this.selectionEnd = this.playbackPos,
+    this.repaint()
+  }
+  
+  this.set_end_sel = function (e) {
+    this.selectionEnd = this.playbackPos,
+    this.repaint()
+  }
+  
+  this.copy = function (e) {
     const t = this.selectionStart < 0 ? 0 : this.selectionStart >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionStart
     const i = this.selectionEnd < 0 ? 0 : this.selectionEnd >= this.audioSequenceReference.data.length ? this.audioSequenceReference.data.length - 1 : this.selectionEnd
-    if (this.clipboardAudioSequence = this.audioSequenceReference.clone(t, i - t), void 0 !== e && !0 === e) { for (let o = 0; o < this.linkedEditors.length; ++o) { this.linkedEditors[o].copy(!1) } }
-  }, this.crop = function (e) {
-    const t = this.selectionStart < 0 ? 0 : this.selectionStart
-    const i = this.selectionEnd < 0 ? 0 : this.selectionEnd
-    if (t != i && !(t > this.audioSequenceReference.data.length)) {
-      let o = []
-      let n = 0
-      let s = 0
-      let a = []
-      let r = 0
-      let h = 0
-      const l = this.selectionStart
-      const c = this.selectionEnd
-      o = o.concat(this.audioSequenceReference.data), n = 0, s = this.audioSequenceReference.data.length, r = 0, h = i - t + 1, a = a.concat(this.audioSequenceReference.data.slice(t, t + h)), this.audioSequenceReference.data = this.audioSequenceReference.data.slice(t, t + h), this.selectionStart = 0, this.selectionEnd = this.audioSequenceReference.data.length, this.updateVisualizationData(), this.historyDoit('crop', o, n, s, a, r, h, l, c)
+    if (this.clipboardAudioSequence = this.audioSequenceReference.clone(t, i - t), void 0 !== e && !0 === e) {
+      for (let o = 0; o < this.linkedEditors.length; ++o) {
+        this.linkedEditors[o].copy(!1)
+      }
     }
-  }, this.addsequence = function (e, t) {
-    const i = []
-    let o = []
-    let n = 0
-    let s = 0
-    const a = this.selectionStart
-    const r = this.selectionEnd
-    n = this.audioSequenceReference.data.length + e, s = t.length, this.audioSequenceReference.createZeroData(e)
-    const h = CreateNewAudioSequence(e, t)
-    this.audioSequenceReference.merge(h), o = this.audioSequenceReference.data.slice(n, n + s + 1), this.selectionStart = n, this.selectionEnd = n + s, this.updateVisualizationData(), this.historyDoit('addsequence', i, 0, 0, o, n, s, a, r)
-  }, this.pasteDo = function (e, t, i, o, n, s) {
+  }
+  
+  this.crop = function (e) {
+    var t = this.selectionStart < 0 ? 0 : this.selectionStart
+    var i = this.selectionEnd < 0 ? 0 : this.selectionEnd;
+    if (t != i && !(t > this.audioSequenceReference.data.length)) {
+      var o = []
+      var n = 0
+      var s = 0
+      var a = []
+      var r = 0
+      var h = 0
+      var l = this.selectionStart
+      var c = this.selectionEnd;
+      o = o.concat(this.audioSequenceReference.data),
+      n = 0,
+      s = this.audioSequenceReference.data.length,
+      r = 0,
+      h = i - t + 1,
+      a = a.concat(this.audioSequenceReference.data.slice(t, t + h)),
+      this.audioSequenceReference.data = this.audioSequenceReference.data.slice(t, t + h),
+      this.selectionStart = 0,
+      this.selectionEnd = this.audioSequenceReference.data.length,
+      this.updateVisualizationData(),
+      this.historyDoit("crop", o, n, s, a, r, h, l, c)
+    }
+  }
+  
+  this.addsequence = function (e, t) {
+    var i = []
+    var o = []
+    var n = 0
+    var s = 0
+    var a = this.selectionStart
+    var r = this.selectionEnd;
+    n = this.audioSequenceReference.data.length + e,
+    s = t.length,
+    this.audioSequenceReference.createZeroData(e);
+    var h = CreateNewAudioSequence(e, t);
+    this.audioSequenceReference.merge(h),
+    o = this.audioSequenceReference.data.slice(n, n + s + 1),
+    this.selectionStart = n,
+    this.selectionEnd = n + s,
+    this.updateVisualizationData(),
+    this.historyDoit("addsequence", i, 0, 0, o, n, s, a, r)
+  }
+  
+  this.pasteDo = function (e, t, i, o, n, s) {
     let a = []
     let r = 0
     let h = 0
@@ -987,12 +1558,26 @@ function AudioLayerSequenceEditor (e) {
     const f = this.selectionEnd
     if (t != i && t < this.audioSequenceReference.data.length && (n - o > 0 && (a = a.concat(this.audioSequenceReference.data.slice(o, n)), r = o, h = n - o), this.audioSequenceReference.trim(o, s - o)), t > this.audioSequenceReference.data.length ? (c = this.audioSequenceReference.data.length, u = t - this.audioSequenceReference.data.length + this.clipboardAudioSequence.data.length, this.audioSequenceReference.createZeroData(t - this.audioSequenceReference.data.length), this.audioSequenceReference.merge(this.clipboardAudioSequence), this.selectionEnd = t + this.clipboardAudioSequence.data.length, l = l.concat(this.audioSequenceReference.data.slice(c, c + u))) : (c = t, u = this.clipboardAudioSequence.data.length, this.audioSequenceReference.merge(this.clipboardAudioSequence, t), this.selectionStart = t, this.selectionEnd = t + this.clipboardAudioSequence.data.length, l = l.concat(this.clipboardAudioSequence.data)), this.updateVisualizationData(), void 0 !== e && !0 === e) { for (let v = 0; v < this.linkedEditors.length; ++v) { this.linkedEditors[v].paste(!1) } }
     this.historyDoit('paste', a, r, h, l, c, u, d, f)
-  }, this.paste = function (e) {
+  }
+  
+  this.paste = function (e) {
     if (void 0 !== this.clipboardAudioSequence) {
-      const t = this
-      // this.audioLayerControl.processLock();
+      var t = this;
+      this.audioLayerControl.processLock();
+      // var i = "/getparam.php?name=paste&selectionStart=" + this.selectionStart + "&selectionEnd=" + this.selectionEnd + "&adlength=" + this.audioSequenceReference.data.length;
+      var i = {start: this.selectionStart, end: this.selectionEnd, seltrimstart: this.selectionStart, seltrimend: this.selectionEnd, trimend: this.selectionEnd}
+    
+      var o = i.start
+      var n = i.end
+      var s = i.seltrimstart
+      var a = i.seltrimend
+      var r = i.trimend;
+      t.pasteDo(e, o, n, s, a, r),
+      t.audioLayerControl.processUnlock()
     }
-  }, this.cutDo = function (e, t, i) {
+  }
+  
+  this.cutDo = function (e, t, i) {
     let o = []
     let n = 0
     let s = 0
@@ -1000,7 +1585,9 @@ function AudioLayerSequenceEditor (e) {
     const r = this.selectionStart
     const h = this.selectionEnd
     if (this.clipboardAudioSequence = this.audioSequenceReference.clone(t, i - t), i - t > 0 && (o = o.concat(this.audioSequenceReference.data.slice(t, i)), n = t, s = i - t, this.historyDoit('cut', o, n, s, a, 0, 0, r, h)), this.audioSequenceReference.trim(t, i - t), this.selectionEnd = this.selectionStart, this.updateVisualizationData(), void 0 !== e && !0 === e) { for (let l = 0; l < this.linkedEditors.length; ++l) { this.linkedEditors[l].cut(!1) } }
-  }, this.cut = function (e) {
+  }
+  
+  this.cut = function (e) {
     const t = this
     this.audioLayerControl.processLock()
     cutdata = {
@@ -1011,7 +1598,9 @@ function AudioLayerSequenceEditor (e) {
     const n = cutdata.end
     if (o == n) { return void t.audioLayerControl.processUnlock() }
     t.cutDo(e, o, n), t.audioLayerControl.processUnlock()
-  }, this.delDo = function (e, t, i) {
+  }
+  
+  this.delDo = function (e, t, i) {
     let o = []
     let n = 0
     let s = 0
@@ -1019,10 +1608,12 @@ function AudioLayerSequenceEditor (e) {
     const r = this.selectionStart
     const h = this.selectionEnd
     if (i - t > 0 && (o = o.concat(this.audioSequenceReference.data.slice(t, i)), n = t, s = i - t, this.historyDoit('del', o, n, s, a, 0, 0, r, h)), this.audioSequenceReference.trim(t, i - t), this.selectionEnd = this.selectionStart, this.updateVisualizationData(), void 0 !== e && !0 === e) { for (let l = 0; l < this.linkedEditors.length; ++l) { this.linkedEditors[l].del(!1) } }
-  }, this.del = function (e) {
+  }
+  
+  this.del = function (e) {
     const t = this
     this.audioLayerControl.processLock()
-    deldata = {
+    var deldata = {
       'start': this.selectionStart,
       'end': this.selectionEnd
     }
@@ -1030,7 +1621,11 @@ function AudioLayerSequenceEditor (e) {
     const n = deldata.end
     if (o == n) { return void t.audioLayerControl.processUnlock() }
     t.delDo(e, o, n), t.audioLayerControl.processUnlock()
-  }, void 0 !== typeof this.elementContext.attributes.title && this.elementContext.attributes.title !== null && (this.title = this.elementContext.attributes.title.value), this.elementContext.parentNode.nodeName.toLowerCase() === 'audiolayercontrol' && (this.audioLayerControl = this.elementContext.parentNode.audioLayerControl, this.audioLayerControl.addAudioLayerSequenceEditor(this), this.createEditor())
+  }
+  void 0 !== typeof this.elementContext.attributes.title && null !== this.elementContext.attributes.title && (this.title = this.elementContext.attributes.title.value),
+  "audiolayercontrol" === this.elementContext.parentNode.nodeName.toLowerCase() && (this.audioLayerControl = this.elementContext.parentNode.audioLayerControl,
+  this.audioLayerControl.addAudioLayerSequenceEditor(this),
+  this.createEditor())
 }
 
 function AudioSequence () {

@@ -1,88 +1,54 @@
 <template>
   <div>
-    <div id="main_cent" class="jumbotron intro">
-      <div class="container" style="height: 100%;">
-        <div class="yamm-content">
-          <div class="converter-body">
-            <div class="row">
-              <div class="span4 offset4" style="display: none;">
-                <div class="progress progress-striped active">
-                  <div id="app-progress" class="bar" style="width: 0%;" />
-                </div>
-              </div>
-            </div>
-            <div class="app-area">
-              <div class="row">
-                <div class="span12">
-                  <div class="btn-toolbar">
-                    <div class="btn-group">
-                      <a class="btn btn-default btn-sm" @click="openFileModal()">
-                        <i class="fa fa-folder-open" /> Abrir
-                      </a>
-                      <input id="files" type="file" name="file" style="display: none;">
-                      <a id="btn_undo" class="btn btn-default btn-sm disabled" @click="audioLayerControl.undo();">
-                        <i class="fa fa-rotate-left" /> Deshacer
-                      </a>
-                      <a id="btn_redo" class="btn btn-default btn-sm disabled" @click="audioLayerControl.redo();">
-                        <i class="fa fa-rotate-right" /> Rehacer
-                      </a>
-                      <a class="btn btn-default btn-sm" @click="audioLayerControl.crop();">
-                        <i class="fa fa-crop" /> Aislar selección
-                      </a>
-                      <a class="btn btn-default btn-sm" @click="audioLayerControl.del();">
-                        <i class="fa fa-remove" /> Eliminar
-                      </a>
-                      <a class="btn btn-default btn-sm" @click="audioLayerControl.reset();">
-                        <i class="fa fa-history" /> Restaurar
-                      </a>
-                    </div>
-                    <div class="btn-group">
-                      <a class="btn btn-default btn-sm" @click="audioLayerControl.selectAll();">
-                        <i class="fa fa-arrows-alt" /> Seleccionar todo
-                      </a>
-                      <a class="btn btn-default btn-sm" @click="audioLayerControl.zoomIntoSelection();">
-                        <i class="fa fa-search-plus" /> Ampliar la selección
-                      </a>
-                      <a class="btn btn-default btn-sm" @click="audioLayerControl.zoomToFit();">
-                        <i class="fa fa-arrows-h" /> Mostrar todo
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <b-row>
-                <b-col sm="12">
-                  <div id="audioloader" style="width: 100%; text-align: center;" />
-                  <div class="well">
-                    <audiolayercontrol id="audioLayerControl" title="">
-                      <audiolayersequenceeditor>
-                        <canvas width="100%" height="20" style="display: none;" />
-                        <canvas class="audioLayerEditor" width="100%" height="100" />
-                        <canvas width="100%" height="20" />
-                      </audiolayersequenceeditor>
-                    </audiolayercontrol>
-                  </div>
-                </b-col>
-              </b-row>
-              <div class="row">
-                <div class="span12">
-                  <div class="btn-toolbar">
-                    <div class="btn-group">
-                      <a class="btn btn-sm btn-default" onclick="$('#savewait').html(''); $('#save_audio').modal('show');">
-                        <i class="fa fa-save" /> Guardar
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <input id="files" type="file" name="file" style="display: none;">
+    <b-button-group>
+      <b-button @click="load()">
+        Abrir
+      </b-button>
+      <b-button id="btn_undo" disabled @click="audioLayerControl.undo();audioLayerControl.zoomToFit();">
+        Deshacer
+      </b-button>
+      <b-button id="btn_redo" disabled @click="audioLayerControl.redo();">
+        Rehacer
+      </b-button>
+      <b-button @click="audioLayerControl.crop();audioLayerControl.zoomIntoSelection();audioLayerControl.selectdbl();">
+        Recortar selección
+      </b-button>
+      <b-button @click="audioLayerControl.del();">
+        Eliminar
+      </b-button>
+      <b-button @click="audioLayerControl.reset();">
+        Restaurar
+      </b-button>
+    </b-button-group>
+    <b-button-group>
+      <b-button @click="audioLayerControl.selectAll();">
+        Seleccionar todo
+      </b-button>
+      <!-- <b-button @click="audioLayerControl.zoomIntoSelection();">
+        Ampliar la selección
+      </b-button> -->
+      <b-button @click="audioLayerControl.zoomToFit();">
+        Mostrar todo
+      </b-button>
+    </b-button-group>
+    <div id="audioloader" style="width: 100%; text-align: center;" />
+    <div class="si" style="width: 100%;">
+      <div class="span12" style="cursor: e-resize;">
+        <audiolayercontrol id="audioLayerControl" title="" />
       </div>
     </div>
+    <div id="app-progress" class="bar" style="width: 0%;" />
+    <b-button-group>
+      <b-button @click="saveFile();">
+        Guardar
+      </b-button>
+    </b-button-group>
   </div>
 </template>
 <script>
+import Vue from 'vue'
+Vue.config.ignoredElements = ['audiolayercontrol']
 export default {
   props: {
     flagLegends: {
@@ -104,6 +70,7 @@ export default {
     }
   },
   watch: {
+
   },
   mounted () {
     const recaptchaScript = document.createElement('script')
@@ -120,12 +87,12 @@ export default {
     },
     load () {
       window.AudioContext = window.AudioContext || window.webkitAudioContext
-      const audioContext = new AudioContext()
+      // const audioContext = new AudioContext()
       this.downloadFile(this.url_src, (blob) => {
         new Promise((resolve, reject) => {
           resolve(blob.arrayBuffer())
-        }).then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer)).then((audioBuffer) => {
-          console.log(audioBuffer)
+        }).then((arrayBuffer) => {
+          this.audioLayerControl.loadArrayBuffer(arrayBuffer, true)
         })
       })
 
@@ -171,6 +138,43 @@ export default {
           callback(new Blob(result))
         })
       })
+    },
+    get_wavdata () {
+      const acontrol = this.audioLayerControl.audioLayerControl
+      const wave = new window.WaveTrack()
+      const sequenceList = []
+      for (let i = 0; i < acontrol.listOfSequenceEditors.length; ++i) {
+        sequenceList.push(acontrol.listOfSequenceEditors[i].audioSequenceReference)
+      }
+      wave.fromAudioSequences(sequenceList)
+      return wave.encodeWaveFile()
+    },
+    saveFile () {
+      if (!this.audioLayerControl.audioLayerControl.listOfSequenceEditors[0].audioSequenceReference) {
+        return
+      }
+
+      const wavdata = this.get_wavdata()
+      const outBitRate = '128k'
+      window.audio_convert(
+        wavdata,
+        outBitRate,
+        1,
+        'mp3',
+        function done (audiodata, outputfile) {
+          if (audiodata) {
+            const blob = new Blob([audiodata])
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = outputfile
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+            window.URL.revokeObjectURL(url)
+          }
+        }
+      )
     }
   }
 }
